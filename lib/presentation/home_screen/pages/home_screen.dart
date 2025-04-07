@@ -3,13 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:the_unwind_blog/common/widgets/appbar/app_bar.dart';
 
+import '../../../gen/assets.gen.dart';
+
 class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: BasicAppBar(
-        title: 'My Feed',
-        showBackButton: true,  // Hiển thị nút back
+        title: Text('The Unwind Blog'),
+        showBackButton: false,  // Hiển thị nút back
         showNotificationsIcon: true,  // Hiển thị biểu tượng thông báo
         showEditIcon: true,  // Hiển thị biểu tượng chỉnh sửa
         onBackPressed: () {
@@ -23,7 +25,7 @@ class HomeScreen extends StatelessWidget {
         onEditPressed: () {
           // Xử lý sự kiện khi nhấn vào biểu tượng chỉnh sửa
           print("Edit clicked");
-        },
+        }, // Hiển thị biểu tượng tìm kiếm
       ),
       body: Center(child: Text("Welcome to My Feed")),
     );

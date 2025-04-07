@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import '../../../gen/assets.gen.dart';
 
 class BasicAppBar extends StatelessWidget implements PreferredSizeWidget {
-  final String title;
+  final Widget? title;
   final bool showBackButton;
   final bool showNotificationsIcon;
   final bool showEditIcon;
@@ -42,10 +42,12 @@ class BasicAppBar extends StatelessWidget implements PreferredSizeWidget {
             },
       )
           : null,
-      title: Text(
-        title,
-        style: TextStyle(color: colorScheme.onSurface, fontSize: 20, fontFamily: Assets.fonts.inter24ptSemiBold),
+      titleTextStyle: TextStyle(
+        color: colorScheme.onSurface,
+        fontSize: 20,
+        fontWeight: FontWeight.w900,
       ),
+      title: title ?? Text(''),
       actions: [
         if (showEditIcon)
           IconButton(

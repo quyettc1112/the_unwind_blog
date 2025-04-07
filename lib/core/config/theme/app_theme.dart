@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../gen/assets.gen.dart';
 import 'app_colors.dart';
 
 class AppTheme {
@@ -34,8 +35,6 @@ class AppTheme {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
       ),
     ),
-
-
   );
 
   static final darkTheme = ThemeData(
