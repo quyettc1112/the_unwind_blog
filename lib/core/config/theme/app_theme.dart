@@ -3,43 +3,69 @@ import 'package:flutter/material.dart';
 import 'app_colors.dart';
 
 class AppTheme {
-
-
-  static final appTheme = ThemeData(
-    primaryColor: AppColors.primary,
-    scaffoldBackgroundColor: AppColors.background,
-    brightness: Brightness.dark,
-    fontFamily: 'CircularStd',
-    snackBarTheme: const SnackBarThemeData(
-      backgroundColor: AppColors.background,
-      contentTextStyle: TextStyle(color: Colors.white),
-    ),
-    inputDecorationTheme: InputDecorationTheme(   
-        filled: true,
-        fillColor: AppColors.secondBackground ,
-        hintStyle: const TextStyle(
-          color: Color(0xffA7A7A7),
-          fontWeight: FontWeight.w400,
-        ),
-        contentPadding: const EdgeInsets.all(16),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(4),
-          borderSide: BorderSide.none
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(4),
-          borderSide: BorderSide.none
-        )
+  static final lightTheme = ThemeData(
+    primaryColor: AppColors.background_white,
+    scaffoldBackgroundColor: AppColors.background_white,
+    fontFamily: 'Satoshi',
+    brightness: Brightness.light,
+    inputDecorationTheme: InputDecorationTheme(
+      fillColor: Colors.transparent,
+      filled: true,
+      contentPadding: EdgeInsets.all(20),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(20),
+        borderSide: const BorderSide(color: Colors.black, width: 0.5),
       ),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(20),
+        borderSide: const BorderSide(color: Colors.black, width: 0.5),
+      ),
+      hintStyle: const TextStyle(
+        color: Colors.grey,
+        fontSize: 14,
+        fontWeight: FontWeight.w500,
+      ),
+    ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
-        backgroundColor: AppColors.primary,
         elevation: 0,
-        textStyle: const TextStyle(fontSize: 16,fontWeight: FontWeight.w400),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(100)
-        )
-      )
-    )
+        backgroundColor: AppColors.primary,
+        textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+      ),
+    ),
+  );
+
+  static final darkTheme = ThemeData(
+    primaryColor: AppColors.background_black,
+    scaffoldBackgroundColor: AppColors.background_black,
+    fontFamily: 'Satoshi',
+    brightness: Brightness.dark,
+    inputDecorationTheme: InputDecorationTheme(
+      fillColor: Colors.transparent,
+      filled: true,
+      contentPadding: EdgeInsets.all(20),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(20),
+        borderSide: const BorderSide(color: Colors.white, width: 0.5),
+      ),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(20),
+        borderSide: const BorderSide(color: Colors.white, width: 0.5),
+      ),
+      hintStyle: const TextStyle(
+        color: Colors.grey,
+        fontSize: 14,
+        fontWeight: FontWeight.w500,
+      ),
+    ),
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        elevation: 0,
+        backgroundColor: AppColors.primary,
+        textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+      ),
+    ),
   );
 }

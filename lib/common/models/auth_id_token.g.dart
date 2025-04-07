@@ -8,12 +8,12 @@ part of 'auth_id_token.dart';
 
 AuthIdToken _$AuthIdTokenFromJson(Map<String, dynamic> json) => AuthIdToken(
       email: json['email'] as String,
-      exp: json['exp'] as int,
-      iat: json['iat'] as int,
+      exp: (json['exp'] as num).toInt(),
+      iat: (json['iat'] as num).toInt(),
       iss: json['iss'] as String,
       sub: json['sub'] as String,
       aud: json['aud'] as String,
-      authTime: json['auth_time'] as int?,
+      authTime: (json['auth_time'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$AuthIdTokenToJson(AuthIdToken instance) =>

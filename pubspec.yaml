@@ -59,6 +59,8 @@ dependencies:
   json_serializable:
   fluttertoast:
   keycloak_flutter:
+  flutter_gen_runner:
+  build_runner:
 
 dev_dependencies:
   flutter_test:
@@ -81,6 +83,11 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+
+  assets:
+    - assets/fonts/
+    - assets/images/
+    - assets/vectors/
 
   # To add assets to your application, add an assets section, like this:
   # assets:
