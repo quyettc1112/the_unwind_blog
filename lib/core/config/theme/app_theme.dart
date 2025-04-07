@@ -6,7 +6,7 @@ class AppTheme {
   static final lightTheme = ThemeData(
     primaryColor: AppColors.background_white,
     scaffoldBackgroundColor: AppColors.background_white,
-    fontFamily: 'Satoshi',
+    fontFamily: 'Inter',
     brightness: Brightness.light,
     inputDecorationTheme: InputDecorationTheme(
       fillColor: Colors.transparent,
@@ -39,7 +39,7 @@ class AppTheme {
   static final darkTheme = ThemeData(
     primaryColor: AppColors.background_black,
     scaffoldBackgroundColor: AppColors.background_black,
-    fontFamily: 'Satoshi',
+    fontFamily: 'Inter',
     brightness: Brightness.dark,
     inputDecorationTheme: InputDecorationTheme(
       fillColor: Colors.transparent,

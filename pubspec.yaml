@@ -88,6 +88,8 @@ flutter:
     - assets/fonts/
     - assets/images/
     - assets/vectors/
+  fonts:
+    - family: Inter
 
   # To add assets to your application, add an assets section, like this:
   # assets:
