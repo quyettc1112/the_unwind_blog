@@ -40,17 +40,11 @@ dependencies:
   dartz:
   logger:
   shared_preferences:
-  fpdart: ^1.1.1
-  dotted_border: ^2.1.0
   image_picker: ^1.1.2
-  uuid: ^4.5.1
-  intl: ^0.20.1
   internet_connection_checker_plus: ^2.7.0
   hive: ^4.0.0-dev.2
-  isar_flutter_libs: ^4.0.0-dev.13
   path_provider: ^2.1.5
   retrofit: ^4.4.2
-  equatable: ^2.0.7
   provider:
   go_router: ^13.2.0
   flutter_appauth:
@@ -62,6 +56,9 @@ dependencies:
   flutter_gen_runner:
   build_runner:
   flutter_svg: ^1.1.6
+  google_fonts:
+  crystal_navigation_bar:
+  iconly:
 
 dev_dependencies:
   flutter_test:

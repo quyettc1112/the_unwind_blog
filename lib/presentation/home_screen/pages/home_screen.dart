@@ -5,7 +5,18 @@ import 'package:the_unwind_blog/common/widgets/appbar/app_bar.dart';
 
 import '../../../gen/assets.gen.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateMixin {
+  int _currentIndex = 0;
+  bool _isLoading = true;
+  late final AnimationController _animationController;
+  late final Animation<double> _fadeAnimation;
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
