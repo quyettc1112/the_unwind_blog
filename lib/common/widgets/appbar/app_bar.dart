@@ -3,55 +3,64 @@ import 'package:flutter/material.dart';
 
 import '../../../core/config/theme/app_colors.dart';
 
-class BasicAppbar extends StatelessWidget implements PreferredSizeWidget {
-  final Widget ? title;
-  final Widget ? action;
-  final Color ? backgroundColor;
-  final bool hideBack;
-  final double ? height;
-  const BasicAppbar({
-    this.title,
-    this.hideBack = false,
-    this.action,
-    this.backgroundColor ,
-    this.height,
-    super.key
+import 'package:flutter/material.dart';
+
+import '../../../gen/assets.gen.dart';
+
+class BasicAppBar extends StatelessWidget implements PreferredSizeWidget {
+  final String title;
+  final bool showBackButton;
+  final bool showNotificationsIcon;
+  final bool showEditIcon;
+  final Function()? onBackPressed;
+  final Function()? onNotificationsPressed;
+  final Function()? onEditPressed;
+
+  const BasicAppBar({
+    required this.title,
+    this.showBackButton = true,
+    this.showNotificationsIcon = true,
+    this.showEditIcon = true,
+    this.onBackPressed,
+    this.onNotificationsPressed,
+    this.onEditPressed,
   });
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return AppBar(
-      backgroundColor: backgroundColor ?? Colors.transparent,
-      elevation: 0,
-      centerTitle: true,
-      automaticallyImplyLeading: false,
-      toolbarHeight: height ?? 80 ,
-      title: title ?? const Text(''),
-      titleSpacing: 0,
-      actions: [
-        action ?? Container()
-      ],
-      leading: hideBack ? null : IconButton(
-        onPressed: (){
-          Navigator.pop(context);
-        },
-        icon: Container(
-          height: 50,
-          width: 50,
-          decoration: const BoxDecoration(
-            color: AppColors.secondBackground,
-            shape: BoxShape.circle
-          ),
-          child: const Icon(
-            Icons.arrow_back_ios_new,
-            size: 15,
-            color:  Colors.white
-          ),
-        ),
+      backgroundColor: colorScheme.surface,
+      leading: showBackButton
+          ? IconButton(
+        icon: Icon(Icons.arrow_back, color: colorScheme.onSurface),
+        onPressed: onBackPressed ??
+                () {
+              Navigator.pop(context);
+            },
+      )
+          : null,
+      title: Text(
+        title,
+        style: TextStyle(color: colorScheme.onSurface, fontSize: 20, fontFamily: Assets.fonts.inter24ptSemiBold),
       ),
+      actions: [
+        if (showEditIcon)
+          IconButton(
+            icon: Icon(Icons.edit, color: colorScheme.onSurface),
+            onPressed: onEditPressed,
+          ),
+        if (showNotificationsIcon)
+          IconButton(
+            icon: Icon(Icons.notifications, color: colorScheme.onSurface),
+            onPressed: onNotificationsPressed,
+          ),
+      ],
     );
   }
-  
+
   @override
-  Size get preferredSize => Size.fromHeight(height ?? 80);
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }
