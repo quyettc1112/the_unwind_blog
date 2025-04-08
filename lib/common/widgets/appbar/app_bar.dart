@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:the_unwind_blog/common/helper/is_dark_mode.dart';
@@ -29,7 +28,6 @@ class BasicAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.onBackPressed,
     this.onNotificationsPressed,
     this.onEditPressed,
-
   });
 
   @override
@@ -39,15 +37,17 @@ class BasicAppBar extends StatelessWidget implements PreferredSizeWidget {
 
     return AppBar(
       backgroundColor: colorScheme.surface,
-      leading: showBackButton
-          ? IconButton(
-        icon: Icon(Icons.arrow_back, color: colorScheme.onSurface),
-        onPressed: onBackPressed ??
-                () {
-              Navigator.pop(context);
-            },
-      )
-          : null,
+      leading:
+          showBackButton
+              ? IconButton(
+                icon: Icon(Icons.arrow_back, color: colorScheme.onSurface),
+                onPressed:
+                    onBackPressed ??
+                    () {
+                      Navigator.pop(context);
+                    },
+              )
+              : null,
       titleTextStyle: TextStyle(
         color: colorScheme.onSurface,
         fontSize: 20,
@@ -68,16 +68,13 @@ class BasicAppBar extends StatelessWidget implements PreferredSizeWidget {
         if (showThemeIcon)
           IconButton(
             icon: Icon(
-              context.isDarkMode
-                  ? Icons.nightlight_round
-                  : Icons.wb_sunny,
+              context.isDarkMode ? Icons.nightlight_round : Icons.wb_sunny,
               color: Theme.of(context).iconTheme.color,
             ),
             onPressed: () {
               // Toggle theme mode when the button is pressed
-              ThemeMode newThemeMode = context.isDarkMode
-                  ? ThemeMode.light
-                  : ThemeMode.dark;
+              ThemeMode newThemeMode =
+                  context.isDarkMode ? ThemeMode.light : ThemeMode.dark;
               context.read<ThemeCubit>().updateTheme(newThemeMode);
             },
           ),
