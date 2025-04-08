@@ -59,6 +59,7 @@ dependencies:
   google_fonts:
   crystal_navigation_bar:
   iconly:
+  hydrated_bloc:
 
 dev_dependencies:
   flutter_test:

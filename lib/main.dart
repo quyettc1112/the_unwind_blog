@@ -1,15 +1,34 @@
-
 import 'package:crystal_navigation_bar/crystal_navigation_bar.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:iconly/iconly.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:the_unwind_blog/core/config/theme/app_colors.dart';
 import 'package:the_unwind_blog/presentation/home_screen/pages/home_screen.dart';
+import 'package:the_unwind_blog/presentation/mark_screen/pages/mark_screen.dart';
+import 'package:the_unwind_blog/presentation/post_screen/pages/post_screen.dart';
+import 'package:the_unwind_blog/presentation/profile_screen/pages/profile_screen.dart';
+import 'package:the_unwind_blog/presentation/search_screen/pages/search_screen.dart';
+import 'package:the_unwind_blog/service_locator.dart';
 
+import 'common/bloc/theme_cubit.dart';
+import 'core/config/theme/app_theme.dart';
 
-void main() {
-  runApp(const MyApp());
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  HydratedBloc.storage = await HydratedStorage.build(
+    storageDirectory:
+    kIsWeb
+        ? HydratedStorageDirectory.web
+        : HydratedStorageDirectory((await getTemporaryDirectory()).path),
+  );
+  await initializeDependencies();
+  runApp(MyApp());
+
 }
-
 
 enum _SelectedTab { home, favorite, add, search, person }
 
@@ -19,14 +38,18 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Crystal Bottom Bar Example',
-      theme: ThemeData(
-        visualDensity: VisualDensity.adaptivePlatformDensity,
+    return MultiBlocProvider(
+      providers: [BlocProvider<ThemeCubit>(create: (context) => ThemeCubit())],
+      child: BlocBuilder<ThemeCubit, ThemeMode>(
+        builder:
+            (context, mode) => MaterialApp(
+          theme: AppTheme.lightTheme,
+          darkTheme: AppTheme.darkTheme,
+          themeMode: mode,
+          debugShowCheckedModeBanner: false,
+          home: const HomePage(),
+        ),
       ),
-      themeMode: ThemeMode.dark,
-      home: const HomePage(),
     );
   }
 }
@@ -41,49 +64,47 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   var _selectedTab = _SelectedTab.home;
 
+  // List of screens corresponding to each tab
+  final List<Widget> _screens = [
+    HomeScreen(),
+    MarkScreen(),
+    PostScreen(),
+    SearchScreen(),
+    ProfileScreen(),
+  ];
+
   void _handleIndexChanged(int i) {
     setState(() {
       _selectedTab = _SelectedTab.values[i];
     });
   }
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       extendBody: true,
-      body: Container(
-          color: Colors.blueGrey,
-          child: Center(
-            child: Text(
-              _selectedTab.name,
-              style: const TextStyle(
-                fontSize: 50,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
-          )),
+      body: _screens[_selectedTab.index],  // Display the selected screen
       bottomNavigationBar: CrystalNavigationBar(
         currentIndex: _SelectedTab.values.indexOf(_selectedTab),
         height: 10,
         itemPadding: EdgeInsets.all(10),
         marginR: EdgeInsets.all(16),
-        // indicatorColor: Colors.blue,
         unselectedItemColor: Colors.white70,
         borderWidth: 1,
         outlineBorderColor: Colors.white,
-        backgroundColor: Colors.black.withValues(alpha: 0.5),
+        backgroundColor: AppColors.background_black.withOpacity(0.45),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.1),
             blurRadius: 4,
-            spreadRadius: 4,
-            offset: Offset(0, 10),
+            spreadRadius: 3,
+            offset: Offset(0, 2),
           ),
         ],
         onTap: _handleIndexChanged,
         items: [
-          /// Home
+          // Home
           CrystalNavigationBarItem(
             icon: IconlyBold.home,
             unselectedIcon: IconlyLight.home,
@@ -95,28 +116,25 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
-
-          /// Search
+          // Search
           CrystalNavigationBarItem(
             icon: IconlyBold.search,
             unselectedIcon: IconlyLight.search,
             selectedColor: Colors.white,
           ),
-
-          /// Add
+          // Add
           CrystalNavigationBarItem(
             icon: IconlyBold.plus,
             unselectedIcon: IconlyLight.plus,
-            selectedColor: Colors.blue,
+            selectedColor: Colors.white,
           ),
-
-          /// Search
+          // Favorite (Mark)
           CrystalNavigationBarItem(
-              icon: IconlyBold.bookmark,
-              unselectedIcon: IconlyLight.bookmark,
-              selectedColor: Colors.white),
-
-          /// Profile
+            icon: IconlyBold.bookmark,
+            unselectedIcon: IconlyLight.bookmark,
+            selectedColor: Colors.white,
+          ),
+          // Profile
           CrystalNavigationBarItem(
             icon: IconlyBold.user_2,
             unselectedIcon: IconlyLight.user,
