@@ -6,14 +6,16 @@ import 'package:go_router/go_router.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:iconly/iconly.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:the_unwind_blog/core/config/theme/app_colors.dart';
 import 'package:the_unwind_blog/presentation/home_screen/pages/home_screen.dart';
-import 'package:the_unwind_blog/presentation/mark_screen/pages/mark_screen.dart';
+import 'package:the_unwind_blog/presentation/mark_screen/pages/bookmark_screen.dart';
 import 'package:the_unwind_blog/presentation/post_screen/pages/post_screen.dart';
 import 'package:the_unwind_blog/presentation/profile_screen/pages/profile_screen.dart';
 import 'package:the_unwind_blog/presentation/search_screen/pages/search_screen.dart';
 import 'package:the_unwind_blog/service_locator.dart';
 
+import 'common/bloc/blog_provider.dart';
 import 'common/bloc/theme_cubit.dart';
 import 'core/config/theme/app_theme.dart';
 
@@ -39,7 +41,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
-      providers: [BlocProvider<ThemeCubit>(create: (context) => ThemeCubit())],
+      providers: [
+        BlocProvider<ThemeCubit>(create: (context) => ThemeCubit()),
+        ChangeNotifierProvider(create: (context) => BlogProvider())
+      ],
       child: BlocBuilder<ThemeCubit, ThemeMode>(
         builder:
             (context, mode) => MaterialApp(
@@ -67,9 +72,9 @@ class _HomePageState extends State<HomePage> {
   // List of screens corresponding to each tab
   final List<Widget> _screens = [
     HomeScreen(),
-    MarkScreen(),
-    PostScreen(),
     SearchScreen(),
+    PostScreen(),
+    BookmarksScreen(),
     ProfileScreen(),
   ];
 
@@ -89,7 +94,7 @@ class _HomePageState extends State<HomePage> {
         currentIndex: _SelectedTab.values.indexOf(_selectedTab),
         height: 10,
         itemPadding: EdgeInsets.all(10),
-        marginR: EdgeInsets.all(16),
+        marginR: EdgeInsets.all(20),
         unselectedItemColor: Colors.white70,
         borderWidth: 1,
         outlineBorderColor: Colors.white,

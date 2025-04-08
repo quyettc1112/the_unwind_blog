@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../../../common/widgets/appbar/app_bar.dart';
 
-class MarkScreen extends StatelessWidget {
+class BookmarksScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

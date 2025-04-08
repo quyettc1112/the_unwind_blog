@@ -60,6 +60,8 @@ dependencies:
   crystal_navigation_bar:
   iconly:
   hydrated_bloc:
+  intl: ^0.20.2
+  uuid: '>=4.3.0'
 
 dev_dependencies:
   flutter_test:

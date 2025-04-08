@@ -3,10 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:the_unwind_blog/common/helper/is_dark_mode.dart';
 
 import '../../../core/config/theme/app_colors.dart';
-
-import 'package:flutter/material.dart';
-
-import '../../../gen/assets.gen.dart';
 import '../../bloc/theme_cubit.dart';
 
 class BasicAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -63,12 +59,12 @@ class BasicAppBar extends StatelessWidget implements PreferredSizeWidget {
       actions: [
         if (showEditIcon)
           IconButton(
-            icon: Icon(Icons.edit, color: colorScheme.onSurface),
+            icon: Icon(Icons.edit_outlined, color: colorScheme.onSurface),
             onPressed: onEditPressed,
           ),
         if (showNotificationsIcon)
           IconButton(
-            icon: Icon(Icons.notifications, color: colorScheme.onSurface),
+            icon: Icon(Icons.notifications_outlined, color: colorScheme.onSurface),
             onPressed: onNotificationsPressed,
           ),
         if (showThemeIcon)
