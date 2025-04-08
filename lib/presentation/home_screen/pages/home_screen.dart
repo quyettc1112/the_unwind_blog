@@ -11,10 +11,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateMixin {
-  int _currentIndex = 0;
-  bool _isLoading = true;
-  late final AnimationController _animationController;
-  late final Animation<double> _fadeAnimation;
 
 
   @override

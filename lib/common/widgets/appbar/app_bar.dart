@@ -30,13 +30,19 @@ class BasicAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.onEditPressed,
   });
 
+
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
+    final appBarBackgroundColor = context.isDarkMode
+        ? AppColors.background_black  // Light theme primary color
+        : AppColors.background_white ;  // Dark theme secondary color
+
     return AppBar(
-      backgroundColor: colorScheme.surface,
+      backgroundColor: appBarBackgroundColor,
       leading:
           showBackButton
               ? IconButton(
