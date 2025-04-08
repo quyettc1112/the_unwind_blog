@@ -6,6 +6,7 @@ import 'package:the_unwind_blog/core/config/theme/app_colors.dart';
 
 import '../../../common/bloc/blog_provider.dart';
 import '../../../common/widgets/appbar/app_bar.dart';
+import '../../../common/widgets/button/rounded_button_red.dart';
 import '../../../domain/entities/blog_entity.dart';
 import '../../home_screen/widgets/blog_card.dart';
 
@@ -93,7 +94,7 @@ class _BookmarksScreenState extends State<BookmarksScreen>
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 32),
-          BasicAppButton(onPressed: () {}, title: 'Explore Blogs'),
+          RoundedButton(onPressed: () {}, text: 'Explore Blogs'),
         ],
       ),
     );
