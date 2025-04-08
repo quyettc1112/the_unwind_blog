@@ -2,9 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
+import 'package:the_unwind_blog/common/helper/is_dark_mode.dart';
 import 'package:the_unwind_blog/common/widgets/appbar/app_bar.dart';
 
 import '../../../common/bloc/blog_provider.dart';
+import '../../../core/config/theme/app_colors.dart';
 import '../../../gen/assets.gen.dart';
 import '../widgets/blog_card.dart';
 import '../widgets/filter_chips.dart';
@@ -14,7 +16,8 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateMixin {
+class _HomeScreenState extends State<HomeScreen>
+    with SingleTickerProviderStateMixin {
   bool _isLoading = true;
   late final AnimationController _animationController;
   late final Animation<double> _fadeAnimation;
@@ -57,29 +60,10 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     _animationController.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: BasicAppBar(
-        title: Text('The Unwind Blog'),
-        showBackButton: false,  // Hiển thị nút back
-        showNotificationsIcon: true,  // Hiển thị biểu tượng thông báo
-        showEditIcon: true,  // Hiển thị biểu tượng chỉnh sửa
-        onBackPressed: () {
-          // Xử lý sự kiện khi nhấn nút back
-          print("Back clicked");
-        },
-        onNotificationsPressed: () {
-          // Xử lý sự kiện khi nhấn vào biểu tượng thông báo
-          print("Notifications clicked");
-        },
-        onEditPressed: () {
-          // Xử lý sự kiện khi nhấn vào biểu tượng chỉnh sửa
-          print("Edit clicked");
-        }, // Hiển thị biểu tượng tìm kiếm
-      ),
-      body: _buildHomeContent(),
-    );
+    return Scaffold(body: _buildHomeContent());
   }
 
   Widget _buildHomeContent() {
@@ -96,24 +80,27 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
         slivers: [
           // App Bar
           SliverAppBar(
+            backgroundColor: context.isDarkMode
+                    ? AppColors.background_black // Light theme primary color
+                    : AppColors.background_white,
             title: Row(
               children: [
-                Icon(
-                  Icons.spa_outlined,
-                  color: colorScheme.primary,
-                ),
-                const SizedBox(width: 8),
                 Text(
-                  'Unwind',
-                  style: textTheme.titleLarge?.copyWith(
+                  'The Unwind Blog',
+                  style: TextStyle(
+                    fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: colorScheme.primary,
+                    color: colorScheme.onSurface,
                   ),
                 ),
               ],
             ),
             floating: true,
             actions: [
+              IconButton(
+                icon: Icon(Icons.edit_outlined, color: colorScheme.onSurface),
+                onPressed: () {},
+              ),
               IconButton(
                 icon: Icon(
                   Icons.notifications_outlined,
@@ -141,9 +128,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
           // Main Content
           if (_isLoading)
             const SliverFillRemaining(
-              child: Center(
-                child: CircularProgressIndicator(),
-              ),
+              child: Center(child: CircularProgressIndicator()),
             )
           else if (blogProvider.filteredBlogs.isEmpty)
             SliverFillRemaining(
@@ -157,10 +142,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                       color: colorScheme.primary.withOpacity(0.5),
                     ),
                     const SizedBox(height: 16),
-                    Text(
-                      'No blogs found',
-                      style: textTheme.titleMedium,
-                    ),
+                    Text('No blogs found', style: textTheme.titleMedium),
                     const SizedBox(height: 8),
                     Text(
                       'Try selecting a different category',
@@ -175,7 +157,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
           else
             SliverList(
               delegate: SliverChildBuilderDelegate(
-                    (context, index) {
+                (context, index) {
                   if (index == 0) {
                     // Featured Blog
                     return _buildFeaturedBlog(blogProvider);
@@ -207,16 +189,16 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
                   return null;
                 },
-                childCount: blogProvider.filteredBlogs.isEmpty
-                    ? 0
-                    : blogProvider.filteredBlogs.length + 1, // +1 for featured blog
+                childCount:
+                    blogProvider.filteredBlogs.isEmpty
+                        ? 0
+                        : blogProvider.filteredBlogs.length +
+                            1, // +1 for featured blog
               ),
             ),
 
           // Bottom padding
-          const SliverToBoxAdapter(
-            child: SizedBox(height: 16),
-          ),
+          const SliverToBoxAdapter(child: SizedBox(height: 16)),
         ],
       ),
     );
@@ -321,10 +303,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
             color: colorScheme.primary.withOpacity(0.5),
           ),
           const SizedBox(height: 16),
-          Text(
-            'Profile',
-            style: textTheme.titleLarge,
-          ),
+          Text('Profile', style: textTheme.titleLarge),
           const SizedBox(height: 8),
           Text(
             'Profile section coming soon',
@@ -338,8 +317,14 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   }
 
   void _navigateToBlogDetail(String blogId) {
-    final blog = Provider.of<BlogProvider>(context, listen: false).getBlogById(blogId);
-    Provider.of<BlogProvider>(context, listen: false).addToReadingHistory(blogId);
+    final blog = Provider.of<BlogProvider>(
+      context,
+      listen: false,
+    ).getBlogById(blogId);
+    Provider.of<BlogProvider>(
+      context,
+      listen: false,
+    ).addToReadingHistory(blogId);
 
     /*Navigator.push(
       context,
@@ -365,11 +350,4 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
       ),
     );*/
   }
-
-
-
-
-
-
-
 }
