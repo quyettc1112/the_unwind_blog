@@ -67,10 +67,10 @@ class _HomePageState extends State<HomePage> {
         currentIndex: _SelectedTab.values.indexOf(_selectedTab),
         height: 10,
         itemPadding: EdgeInsets.all(10),
-        marginR: EdgeInsets.all(15),
+        marginR: EdgeInsets.all(16),
         // indicatorColor: Colors.blue,
         unselectedItemColor: Colors.white70,
-        borderWidth: 2,
+        borderWidth: 1,
         outlineBorderColor: Colors.white,
         backgroundColor: Colors.black.withValues(alpha: 0.5),
         boxShadow: [
@@ -96,24 +96,24 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
 
-          /// Favourite
+          /// Search
           CrystalNavigationBarItem(
-            icon: IconlyBold.heart,
-            unselectedIcon: IconlyLight.heart,
-            selectedColor: Colors.red,
+            icon: IconlyBold.search,
+            unselectedIcon: IconlyLight.search,
+            selectedColor: Colors.white,
           ),
 
           /// Add
           CrystalNavigationBarItem(
             icon: IconlyBold.plus,
             unselectedIcon: IconlyLight.plus,
-            selectedColor: Colors.white,
+            selectedColor: Colors.blue,
           ),
 
           /// Search
           CrystalNavigationBarItem(
-              icon: IconlyBold.search,
-              unselectedIcon: IconlyLight.search,
+              icon: IconlyBold.bookmark,
+              unselectedIcon: IconlyLight.bookmark,
               selectedColor: Colors.white),
 
           /// Profile
