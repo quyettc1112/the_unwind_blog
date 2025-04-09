@@ -62,56 +62,81 @@ class _CustomTabBarExampleState extends State<CustomTabBarExample>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Column(
-          children: [
+      body: Column(
+        children: [
           // Custom TabBar
           Container(
-          child: Row(
-            children: [
-              Expanded(
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: TabBar(
-                    controller: _tabController,
-                    isScrollable: false,
-                    labelColor: context.isDarkMode
-                        ? AppColors.background_white
-                        : AppColors.background_black,
-                    unselectedLabelColor: Colors.grey,
-                    indicator: CircleTabIndicator(
-                      color: Colors.black,
-                      radius: 4,
+            child: Row(
+              children: [
+                Expanded(
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: TabBar(
+                      controller: _tabController,
+                      isScrollable: false,
+                      labelColor:
+                          context.isDarkMode
+                              ? AppColors.background_white
+                              : AppColors.background_black,
+                      unselectedLabelColor: Colors.grey,
+                      indicator: CircleTabIndicator(
+                        color: Colors.black,
+                        radius: 4,
+                      ),
+                      labelPadding: EdgeInsets.only(right: 30),
+                      indicatorPadding: EdgeInsets.zero,
+                      tabs: [
+                        Tab(
+                          child: Text(
+                            'For You',
+                            style: TextStyle(
+                              fontSize: 14, // 👈 Cỡ chữ
+                              fontWeight: FontWeight.bold, // 👈 Đậm chữ
+                            ),
+                          ),
+                        ),
+                        Tab(
+                          child: Text(
+                            'Following',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        Tab(
+                          child: Text(
+                            'Technology',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                    labelPadding: EdgeInsets.only(right: 30),
-                    indicatorPadding: EdgeInsets.zero,
-                    tabs: [
-                      Tab(text: 'For You'),
-                      Tab(text: 'Following'),
-                      Tab(text: 'Technology'),
-                    ],
                   ),
                 ),
-              ),
 
-              // Icon
-              Container(
-                margin: EdgeInsets.only(left: 10, right: 15), // Cách tab một xíu
-                child: Icon(Icons.search, size: 30),
-              ),
-            ],
+                // Icon
+                Container(
+                  margin: EdgeInsets.only(left: 10, right: 15),
+                  // Cách tab một xíu
+                  child: Icon(Icons.search, size: 30),
+                ),
+              ],
+            ),
           ),
-        ),
-        Container(
-        width: double.maxFinite,
-        height: 300,
-    child: TabBarView(
-    controller: _tabController,
-        children: [Text('Hi'), Text('There'), Text('Here')],
-    ),
-    ),
-    ],
-    )
-    ,
+          Container(
+            width: double.maxFinite,
+            height: 300,
+            child: TabBarView(
+              controller: _tabController,
+              children: [Text('Hi'), Text('There'), Text('Here')],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
