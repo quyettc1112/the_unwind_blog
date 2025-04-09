@@ -80,8 +80,10 @@ class _HomeScreenState extends State<HomeScreen>
         slivers: [
           // App Bar
           SliverAppBar(
-            backgroundColor: context.isDarkMode
-                    ? AppColors.background_black // Light theme primary color
+            backgroundColor:
+                context.isDarkMode
+                    ? AppColors
+                        .background_black // Light theme primary color
                     : AppColors.background_white,
             title: Row(
               children: [
@@ -111,91 +113,47 @@ class _HomeScreenState extends State<HomeScreen>
             ],
           ),
 
-          // Filter Chips
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.only(top: 8),
-              child: FilterChips(
-                categories: blogProvider.categories,
-                selectedCategory: blogProvider.selectedCategory,
-                onCategorySelected: (category) {
-                  blogProvider.filterByCategory(category);
-                },
-              ),
+          SliverList(
+            delegate: SliverChildBuilderDelegate(
+              (context, index) {
+                if (index == 0) {
+                  // Featured Blog
+                  return _buildFeaturedBlog(blogProvider);
+                }
+
+                final adjustedIndex = index - 1;
+                if (adjustedIndex < blogProvider.filteredBlogs.length) {
+                  final blog = blogProvider.filteredBlogs[adjustedIndex];
+                  return FutureBuilder<bool>(
+                    future: blogProvider.isBlogBookmarked(blog.id),
+                    builder: (context, snapshot) {
+                      final isBookmarked = snapshot.data ?? false;
+                      return FadeTransition(
+                        opacity: _fadeAnimation,
+                        child: BlogCard(
+                          blog: blog,
+                          isBookmarked: isBookmarked,
+                          onToggleBookmark: (blogId) {
+                            blogProvider.toggleBookmark(blogId);
+                          },
+                          onTap: (blogId) {
+                            _navigateToBlogDetail(blogId);
+                          },
+                        ),
+                      );
+                    },
+                  );
+                }
+
+                return null;
+              },
+              childCount:
+                  blogProvider.filteredBlogs.isEmpty
+                      ? 0
+                      : blogProvider.filteredBlogs.length +
+                          1, // +1 for featured blog
             ),
           ),
-
-          // Main Content
-          if (_isLoading)
-            const SliverFillRemaining(
-              child: Center(child: CircularProgressIndicator()),
-            )
-          else if (blogProvider.filteredBlogs.isEmpty)
-            SliverFillRemaining(
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.article_outlined,
-                      size: 64,
-                      color: colorScheme.primary.withOpacity(0.5),
-                    ),
-                    const SizedBox(height: 16),
-                    Text('No blogs found', style: textTheme.titleMedium),
-                    const SizedBox(height: 8),
-                    Text(
-                      'Try selecting a different category',
-                      style: textTheme.bodyMedium?.copyWith(
-                        color: colorScheme.onSurfaceVariant,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            )
-          else
-            SliverList(
-              delegate: SliverChildBuilderDelegate(
-                (context, index) {
-                  if (index == 0) {
-                    // Featured Blog
-                    return _buildFeaturedBlog(blogProvider);
-                  }
-
-                  final adjustedIndex = index - 1;
-                  if (adjustedIndex < blogProvider.filteredBlogs.length) {
-                    final blog = blogProvider.filteredBlogs[adjustedIndex];
-                    return FutureBuilder<bool>(
-                      future: blogProvider.isBlogBookmarked(blog.id),
-                      builder: (context, snapshot) {
-                        final isBookmarked = snapshot.data ?? false;
-                        return FadeTransition(
-                          opacity: _fadeAnimation,
-                          child: BlogCard(
-                            blog: blog,
-                            isBookmarked: isBookmarked,
-                            onToggleBookmark: (blogId) {
-                              blogProvider.toggleBookmark(blogId);
-                            },
-                            onTap: (blogId) {
-                              _navigateToBlogDetail(blogId);
-                            },
-                          ),
-                        );
-                      },
-                    );
-                  }
-
-                  return null;
-                },
-                childCount:
-                    blogProvider.filteredBlogs.isEmpty
-                        ? 0
-                        : blogProvider.filteredBlogs.length +
-                            1, // +1 for featured blog
-              ),
-            ),
 
           // Bottom padding
           const SliverToBoxAdapter(child: SizedBox(height: 16)),

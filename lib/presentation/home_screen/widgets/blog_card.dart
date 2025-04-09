@@ -88,7 +88,7 @@ class _BlogCardState extends State<BlogCard> with SingleTickerProviderStateMixin
 
   Widget _buildVerticalCard(TextTheme textTheme, ColorScheme colorScheme) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 8),
       decoration: BoxDecoration(
         color: Theme.of(context).cardTheme.color,
         borderRadius: BorderRadius.circular(12),
