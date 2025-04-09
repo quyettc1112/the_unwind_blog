@@ -141,7 +141,7 @@ class _BlogCardState extends State<BlogCard> with SingleTickerProviderStateMixin
                 top: 12,
                 right: 12,
                 child: AnimatedScale(
-                  scale: widget.isBookmarked ? 1.1 : 1.0,
+                  scale: widget.isBookmarked ? 1.0 : 0.9,
                   duration: const Duration(milliseconds: 200),
                   child: Container(
                     decoration: BoxDecoration(
@@ -158,8 +158,8 @@ class _BlogCardState extends State<BlogCard> with SingleTickerProviderStateMixin
                             : colorScheme.onSurface,
                       ),
                       onPressed: () => widget.onToggleBookmark(widget.blog.id),
-                      iconSize: 24,
-                      padding: const EdgeInsets.all(8),
+                      iconSize: 20,
+                      padding: const EdgeInsets.all(5),
                       constraints: const BoxConstraints(),
                     ),
                   ),

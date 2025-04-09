@@ -55,7 +55,7 @@ class _BookmarksScreenState extends State<BookmarksScreen>
     final textTheme = theme.textTheme;
 
     return Scaffold(
-      appBar: BasicAppBar(title: Text('Post Screen')),
+      appBar: BasicAppBar(title: Text('Bookmarks Screen')),
       body: FadeTransition(
         opacity: _fadeAnimation,
         child:
