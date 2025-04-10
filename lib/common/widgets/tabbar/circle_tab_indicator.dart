@@ -1,14 +1,17 @@
 import 'package:flutter/cupertino.dart';
-
+import 'package:flutter/material.dart';
 class CircleTabIndicator extends Decoration {
-  final Color color;
   final double radius;
+  final Color color;
 
-  CircleTabIndicator({required this.color, required this.radius});
+  CircleTabIndicator({
+    required this.radius,
+    required this.color,
+  });
 
   @override
   BoxPainter createBoxPainter([VoidCallback? onChanged]) {
-    return _CirclePainter(color: color, radius: radius);
+    return _CirclePainter(radius: radius, color: color);
   }
 }
 
@@ -16,7 +19,7 @@ class _CirclePainter extends BoxPainter {
   final double radius;
   final Color color;
 
-  _CirclePainter({required this.color, required this.radius});
+  _CirclePainter({required this.radius, required this.color});
 
   @override
   void paint(Canvas canvas, Offset offset, ImageConfiguration cfg) {

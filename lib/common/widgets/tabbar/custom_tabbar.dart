@@ -14,7 +14,8 @@ class CustomTabBar extends StatefulWidget {
   State<CustomTabBar> createState() => _CustomTabBarState();
 }
 
-class _CustomTabBarState extends State<CustomTabBar> with TickerProviderStateMixin  {
+class _CustomTabBarState extends State<CustomTabBar>
+    with TickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> animation;
 
@@ -40,31 +41,50 @@ class _CustomTabBarState extends State<CustomTabBar> with TickerProviderStateMix
     super.dispose();
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: context.isDarkMode
-          ? AppColors.background_black
-          : AppColors.background_white,
+      color:
+          context.isDarkMode
+              ? AppColors.background_black
+              : AppColors.background_white,
       child: Row(
         children: [
           Expanded(
             child: TabBar(
               controller: widget.tabController,
               isScrollable: false,
-              labelColor: context.isDarkMode
-                  ? AppColors.background_white
-                  : AppColors.background_black,
+              labelColor:
+                  context.isDarkMode
+                      ? AppColors.background_white
+                      : AppColors.background_black,
               unselectedLabelColor: Colors.grey,
               overlayColor: MaterialStateProperty.all(Colors.transparent),
-              indicator: CircleTabIndicator(color: Colors.black, radius: 4),
+              indicator: CircleTabIndicator(
+                color: context.isDarkMode ? Colors.white : Colors.black,
+                radius: 4,
+              ),
               labelPadding: EdgeInsets.only(right: 25),
               indicatorPadding: EdgeInsets.zero,
               tabs: [
-                Tab(child: Text('For You', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold))),
-                Tab(child: Text('Following', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold))),
-                Tab(child: Text('Technology', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold))),
+                Tab(
+                  child: Text(
+                    'For You',
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                Tab(
+                  child: Text(
+                    'Following',
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                Tab(
+                  child: Text(
+                    'Technology',
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                  ),
+                ),
               ],
             ),
           ),
