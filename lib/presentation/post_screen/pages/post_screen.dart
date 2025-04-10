@@ -64,7 +64,7 @@ class _CustomTabBarExampleState extends State<CustomTabBarExample>
     return Scaffold(
       body: Column(
         children: [
-          // Custom TabBar
+           // Custom TabBar
           Container(
             child: Row(
               children: [
