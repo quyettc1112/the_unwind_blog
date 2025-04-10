@@ -69,8 +69,8 @@ class _CustomTabBarState extends State<CustomTabBar> with TickerProviderStateMix
             ),
           ),
           Container(
-            margin: EdgeInsets.only(left: 10, right: 15),
-            child: Icon(Icons.search, size: 30),
+            margin: EdgeInsets.only(left: 10, right: 12),
+            child: Icon(Icons.filter_alt_outlined, size: 24),
           ),
         ],
       ),
