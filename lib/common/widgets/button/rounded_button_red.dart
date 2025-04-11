@@ -23,7 +23,8 @@ class RoundedButton extends StatelessWidget {
       ),
       child: Text(
         text,
-        style: const TextStyle(// Chữ đen
+        style:  TextStyle(// Chữ đen
+          color: context.isDarkMode ? Colors.black : Colors.white,
           fontWeight: FontWeight.bold,
           fontSize: 16,
         ),

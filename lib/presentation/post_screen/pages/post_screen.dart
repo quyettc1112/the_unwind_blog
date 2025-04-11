@@ -98,7 +98,7 @@ class _PostScreenState extends State<PostScreen>
           Expanded(
             child: Center(
               child: Transform.scale(
-                scale: 1, // 👈 scale 120% so với gốc
+                scale: 0.95, // 👈 scale 120% so với gốc
                 child: SvgPicture.asset(
                   Assets.vectors.undrawIdeasFlow8d3x,
                   width: double.infinity,
