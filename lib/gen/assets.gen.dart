@@ -243,8 +243,19 @@ class $AssetsFontsGen {
       ];
 }
 
+class $AssetsVectorsGen {
+  const $AssetsVectorsGen();
+
+  /// File path: assets/vectors/undraw_ideas-flow_8d3x.svg
+  String get undrawIdeasFlow8d3x => 'assets/vectors/undraw_ideas-flow_8d3x.svg';
+
+  /// List of all assets
+  List<String> get values => [undrawIdeasFlow8d3x];
+}
+
 class Assets {
   const Assets._();
 
   static const $AssetsFontsGen fonts = $AssetsFontsGen();
+  static const $AssetsVectorsGen vectors = $AssetsVectorsGen();
 }
