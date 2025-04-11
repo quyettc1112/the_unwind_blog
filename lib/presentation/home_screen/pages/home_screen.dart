@@ -75,7 +75,6 @@ class _HomeScreenState extends State<HomeScreen>
     final blogProvider = Provider.of<BlogProvider>(context);
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    final textTheme = theme.textTheme;
     int _selectedTabIndex = 0;
 
     return RefreshIndicator(
@@ -174,48 +173,6 @@ class _HomeScreenState extends State<HomeScreen>
                           1, // +1 for featured blog
             ),
           ),
-
-          /*SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (context, index) {
-                if (index == 0) {
-                  // Featured Blog
-                  return _buildFeaturedBlog(blogProvider);
-                }
-
-                final adjustedIndex = index - 1;
-                if (adjustedIndex < blogProvider.filteredBlogs.length) {
-                  final blog = blogProvider.filteredBlogs[adjustedIndex];
-                  return FutureBuilder<bool>(
-                    future: blogProvider.isBlogBookmarked(blog.id),
-                    builder: (context, snapshot) {
-                      final isBookmarked = snapshot.data ?? false;
-                      return FadeTransition(
-                        opacity: _fadeAnimation,
-                        child: BlogCard(
-                          blog: blog,
-                          isBookmarked: isBookmarked,
-                          onToggleBookmark: (blogId) {
-                            blogProvider.toggleBookmark(blogId);
-                          },
-                          onTap: (blogId) {
-                            _navigateToBlogDetail(blogId);
-                          },
-                        ),
-                      );
-                    },
-                  );
-                }
-
-                return null;
-              },
-              childCount:
-                  blogProvider.filteredBlogs.isEmpty
-                      ? 0
-                      : blogProvider.filteredBlogs.length +
-                          1, // +1 for featured blog
-            ),
-          ),*/
 
           // Bottom padding
           const SliverToBoxAdapter(child: SizedBox(height: 16)),
