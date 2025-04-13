@@ -18,8 +18,7 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen>
-    with TickerProviderStateMixin {
+class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   bool _isLoading = true;
   late final AnimationController _animationController;
   late final Animation<double> _fadeAnimation;
@@ -75,109 +74,132 @@ class _HomeScreenState extends State<HomeScreen>
     final blogProvider = Provider.of<BlogProvider>(context);
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    int _selectedTabIndex = 0;
 
     return RefreshIndicator(
       color: colorScheme.primary,
       onRefresh: _initData,
-      child: CustomScrollView(
-        physics: const AlwaysScrollableScrollPhysics(),
-        slivers: [
-          // App Bar
-          SliverAppBar(
-            backgroundColor:
-                context.isDarkMode
-                    ? AppColors
-                        .background_black // Light theme primary color
-                    : AppColors.background_white,
-            title: Row(
-              children: [
-                Text(
-                  'The Unwind Blog',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
+      child: NestedScrollView(
+        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+          return <Widget>[
+            SliverAppBar(
+              backgroundColor:
+                  context.isDarkMode
+                      ? AppColors.background_black
+                      : AppColors.background_white,
+              title: Row(
+                children: [
+                  Text(
+                    'The Unwind Blog',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: colorScheme.onSurface,
+                    ),
+                  ),
+                ],
+              ),
+              floating: true,
+              actions: [
+                IconButton(
+                  icon: Icon(Icons.edit_outlined, color: colorScheme.onSurface),
+                  onPressed: () {},
+                ),
+                IconButton(
+                  icon: Icon(
+                    Icons.notifications_outlined,
                     color: colorScheme.onSurface,
                   ),
+                  onPressed: () {},
                 ),
               ],
             ),
-            floating: true,
-            actions: [
-              IconButton(
-                icon: Icon(Icons.edit_outlined, color: colorScheme.onSurface),
-                onPressed: () {},
-              ),
-              IconButton(
-                icon: Icon(
-                  Icons.notifications_outlined,
-                  color: colorScheme.onSurface,
-                ),
-                onPressed: () {},
-              ),
-            ],
-          ),
-
-          // TabBar & Fillter
-          // Chèn một widget bình thường vào
-          SliverToBoxAdapter(
-            child: CustomTabBar(tabController: _tabController),
-          ),
-
-          SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (context, index) {
-                List<Blog> blogsToShow;
-                if (_selectedTabIndex == 0) {
-                  blogsToShow = blogProvider.filteredBlogs;
-                } else if (_selectedTabIndex == 1) {
-                  blogsToShow = blogProvider.blogs;
-                } else {
-                  blogsToShow = blogProvider.blogs;
-                }
-
-                if (index == 0) {
-                  return _buildFeaturedBlog(blogProvider);
-                }
-
-                final adjustedIndex = index - 1;
-                if (adjustedIndex < blogsToShow.length) {
-                  final blog = blogsToShow[adjustedIndex];
-                  return FutureBuilder<bool>(
-                    future: blogProvider.isBlogBookmarked(blog.id),
-                    builder: (context, snapshot) {
-                      final isBookmarked = snapshot.data ?? false;
-                      return FadeTransition(
-                        opacity: _fadeAnimation,
-                        child: BlogCard(
-                          blog: blog,
-                          isBookmarked: isBookmarked,
-                          onToggleBookmark: (blogId) {
-                            blogProvider.toggleBookmark(blogId);
-                          },
-                          onTap: (blogId) {
-                            _navigateToBlogDetail(blogId);
-                          },
-                        ),
-                      );
-                    },
-                  );
-                }
-
-                return null;
-              },
-              childCount:
-                  blogProvider.filteredBlogs.isEmpty
-                      ? 0
-                      : blogProvider.filteredBlogs.length +
-                          1, // +1 for featured blog
+            SliverList(
+              delegate: SliverChildBuilderDelegate((_, int index) {
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [CustomTabBar(tabController: _tabController)],
+                );
+              }, childCount: 1),
             ),
-          ),
-
-          // Bottom padding
-          const SliverToBoxAdapter(child: SizedBox(height: 16)),
-        ],
+          ];
+        },
+        body: TabBarView(
+          controller: _tabController,
+          children: <Widget>[
+            buildTabContent(
+              blogs: blogProvider.filteredBlogs,
+              blogProvider: blogProvider,
+            ),
+            buildTabContent(
+              blogs: blogProvider.blogs,
+              blogProvider: blogProvider,
+            ),
+            buildTabContent(
+              blogs: blogProvider.blogs,
+              blogProvider: blogProvider,
+            ),
+          ],
+        ),
       ),
+    );
+  }
+
+  Widget buildTabContent({
+    required List<Blog> blogs,
+    required BlogProvider blogProvider,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      child: buildBlogList(
+        blogs: blogs,
+        fadeAnimation: _fadeAnimation,
+        isBlogBookmarked: blogProvider.isBlogBookmarked,
+        onToggleBookmark: blogProvider.toggleBookmark,
+        onTapBlog: _navigateToBlogDetail,
+        blogProvider: blogProvider,
+      ),
+    );
+  }
+
+  Widget buildBlogList({
+    required List<Blog> blogs,
+    required Animation<double> fadeAnimation,
+    required Future<bool> Function(String blogId) isBlogBookmarked,
+    required void Function(String blogId) onToggleBookmark,
+    required void Function(String blogId) onTapBlog,
+    required BlogProvider blogProvider,
+  }) {
+    if (blogs.isEmpty) {
+      return Center(child: Text('Không có blog nào để hiển thị'));
+    }
+    return ListView.builder(
+      physics: const NeverScrollableScrollPhysics(),
+      shrinkWrap: true,
+      itemCount: blogs.length + 1, // +1 cho featured blog
+      itemBuilder: (context, index) {
+        if (index == 0) {
+          return _buildFeaturedBlog(blogProvider); // Bạn giữ nguyên hàm này nhé
+        }
+
+        final adjustedIndex = index - 1;
+        final blog = blogs[adjustedIndex];
+        return FutureBuilder<bool>(
+          future: isBlogBookmarked(blog.id),
+          builder: (context, snapshot) {
+            final isBookmarked = snapshot.data ?? false;
+            return FadeTransition(
+              opacity: fadeAnimation,
+              child: BlogCard(
+                blog: blog,
+                isBookmarked: isBookmarked,
+                onToggleBookmark: onToggleBookmark,
+                onTap: onTapBlog,
+              ),
+            );
+          },
+        );
+      },
     );
   }
 
@@ -198,7 +220,6 @@ class _HomeScreenState extends State<HomeScreen>
         final isBookmarked = snapshot.data ?? false;
 
         return Container(
-          margin: const EdgeInsets.fromLTRB(16, 16, 16, 8),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -220,7 +241,7 @@ class _HomeScreenState extends State<HomeScreen>
                   ),
                 ],
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 10),
 
               // Featured blog card
               FadeTransition(
@@ -239,7 +260,7 @@ class _HomeScreenState extends State<HomeScreen>
 
               // Popular section divider
               Padding(
-                padding: const EdgeInsets.only(top: 24, bottom: 8),
+                padding: const EdgeInsets.only(top: 8, bottom: 8),
                 child: Row(
                   children: [
                     Icon(

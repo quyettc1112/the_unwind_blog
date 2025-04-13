@@ -81,7 +81,7 @@ class _CustomTabBarState extends State<CustomTabBar>
                 ),
                 Tab(
                   child: Text(
-                    'Technology',
+                    'Featured',
                     style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
                   ),
                 ),
