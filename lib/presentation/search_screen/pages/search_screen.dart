@@ -11,26 +11,89 @@ class SearchScreen extends StatefulWidget {
   State<SearchScreen> createState() => _SearchScreenState();
 }
 
-class _SearchScreenState extends State<SearchScreen> with SingleTickerProviderStateMixin {
+class _SearchScreenState extends State<SearchScreen>
+    with SingleTickerProviderStateMixin {
   late TabController tabContoller;
+
 
   @override
   void initState() {
+    tabContoller = new TabController(vsync: this, length: 3);
     super.initState();
-    tabContoller = TabController(vsync: this, length: 3);
-  }
-
-  @override
-  void dispose() {
-    tabContoller.dispose();
-    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    return Scaffold(
+    return  DefaultTabController(
+      length: 3,
+      child: Scaffold(
+        body: NestedScrollView(
+          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+            return <Widget>[
+              // App Bar
+              SliverAppBar(
+                backgroundColor:
+                context.isDarkMode
+                    ? AppColors
+                    .background_black // Light theme primary color
+                    : AppColors.background_white,
+                title: Row(
+                  children: [
+                    Text(
+                      'The Unwind Blog',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: colorScheme.onSurface,
+                      ),
+                    ),
+                  ],
+                ),
+                floating: true,
+                actions: [
+                  IconButton(
+                    icon: Icon(Icons.edit_outlined, color: colorScheme.onSurface),
+                    onPressed: () {},
+                  ),
+                  IconButton(
+                    icon: Icon(
+                      Icons.notifications_outlined,
+                      color: colorScheme.onSurface,
+                    ),
+                    onPressed: () {},
+                  ),
+                ],
+              ),
+              SliverList(
+                delegate: SliverChildBuilderDelegate(
+                      (_, int index) {
+                    return Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        CustomTabBar(
+                          tabController: tabContoller,
+                        )
+                      ],
+                    );
+                  },
+                  childCount: 1,
+                ),
+              ),
+            ];
+          },
+          body: TabBarView(
+            children: <Widget>[
+              Text("FIRST TAB"),
+              Text("SECOND TAB"),
+              Text("THIRD TAB"),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
+

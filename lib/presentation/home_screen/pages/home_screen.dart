@@ -174,6 +174,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       return Center(child: Text('Không có blog nào để hiển thị'));
     }
     return ListView.builder(
+      padding: EdgeInsets.symmetric(vertical: 10),
       physics: const NeverScrollableScrollPhysics(),
       shrinkWrap: true,
       itemCount: blogs.length + 1, // +1 cho featured blog
