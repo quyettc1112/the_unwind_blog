@@ -4,6 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:the_unwind_blog/common/helper/is_dark_mode.dart';
 import 'package:the_unwind_blog/common/widgets/appbar/app_bar.dart';
+import 'package:the_unwind_blog/common/widgets/state/empty_state.dart';
 import 'package:the_unwind_blog/common/widgets/tabbar/custom_tabbar.dart';
 
 import '../../../common/bloc/blog_provider.dart';
@@ -174,16 +175,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       return Center(child: Text('Không có blog nào để hiển thị'));
     }
     return ListView.builder(
-      padding: EdgeInsets.symmetric(vertical: 10),
+      padding: EdgeInsets.only(top: 10, bottom: 90),
       physics: const NeverScrollableScrollPhysics(),
       shrinkWrap: true,
-      itemCount: blogs.length + 1, // +1 cho featured blog
+      itemCount: blogs.length,
       itemBuilder: (context, index) {
-        if (index == 0) {
-          return _buildFeaturedBlog(blogProvider); // Bạn giữ nguyên hàm này nhé
-        }
-
-        final adjustedIndex = index - 1;
+        final adjustedIndex = index;
         final blog = blogs[adjustedIndex];
         return FutureBuilder<bool>(
           future: isBlogBookmarked(blog.id),
@@ -227,17 +224,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               // Today's Pick label
               Row(
                 children: [
-                  Icon(
-                    Icons.star_rounded,
-                    color: colorScheme.primary,
-                    size: 20,
-                  ),
+                  Icon(Icons.star_rounded, size: 20),
                   const SizedBox(width: 4),
                   Text(
                     "Editor's Pick",
                     style: textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.bold,
-                      color: colorScheme.primary,
+                      color: AppColors.red_button,
                     ),
                   ),
                 ],
