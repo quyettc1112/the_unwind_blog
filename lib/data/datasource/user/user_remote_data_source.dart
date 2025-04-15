@@ -1,10 +1,8 @@
 import 'package:dio/dio.dart';
 
-import '../../core/error/exceptions.dart';
-import '../../domain/entities/user_entity.dart';
+import '../../../core/error/exceptions.dart';
+import '../../models/user_model.dart';
 
-import '../../core/network/dio_client.dart';
-import '../models/user_model.dart';
 
 abstract interface class UserRemoteDataSource {
   Future<List<UserModel>> getAllUsers();

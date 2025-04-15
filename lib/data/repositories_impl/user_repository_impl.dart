@@ -1,8 +1,8 @@
 import '../../core/network/connection_checker.dart';
 import '../../domain/entities/user_entity.dart';
-import '../../domain/repository/user_repository.dart';
-import '../datasource/user_local_data_source.dart';
-import '../datasource/user_remote_data_source.dart';
+import '../../domain/repositories/user_repository.dart';
+import '../datasource/user/user_local_data_source.dart';
+import '../datasource/user/user_remote_data_source.dart';
 
 import 'package:dartz/dartz.dart';
 

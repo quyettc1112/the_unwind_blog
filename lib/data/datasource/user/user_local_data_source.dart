@@ -1,10 +1,10 @@
-import '../../domain/entities/user_entity.dart';
+import '../../../domain/entities/user_entity.dart';
 
 import 'package:hive/hive.dart';
-import '../models/user_model.dart';
+import '../../models/user_model.dart';
 
 import 'package:hive/hive.dart';
-import '../models/user_model.dart';
+import '../../models/user_model.dart';
 
 abstract interface class UserLocalDataSource {
   Future<void> saveUsers(List<UserModel> users);
