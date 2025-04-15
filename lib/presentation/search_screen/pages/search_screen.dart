@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:the_unwind_blog/common/helper/is_dark_mode.dart';
+import 'package:the_unwind_blog/domain/entities/blog_unwind_entity.dart';
 
 import '../../../common/widgets/appbar/app_bar.dart';
 import '../../../common/widgets/tabbar/custom_tabbar.dart';
+import '../../../core/base_state/base_list_cubit.dart';
+import '../../../core/base_state/base_list_state.dart';
 import '../../../core/config/theme/app_colors.dart';
+import '../../../domain/entities/user_entity.dart';
 
 class SearchScreen extends StatefulWidget {
   @override
@@ -21,79 +26,38 @@ class _SearchScreenState extends State<SearchScreen>
     tabContoller = new TabController(vsync: this, length: 3);
     super.initState();
   }
-
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-    return  DefaultTabController(
-      length: 3,
-      child: Scaffold(
-        body: NestedScrollView(
-          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-            return <Widget>[
-              // App Bar
-              SliverAppBar(
-                backgroundColor:
-                context.isDarkMode
-                    ? AppColors
-                    .background_black // Light theme primary color
-                    : AppColors.background_white,
-                title: Row(
-                  children: [
-                    Text(
-                      'The Unwind Blog',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: colorScheme.onSurface,
-                      ),
-                    ),
-                  ],
-                ),
-                floating: true,
-                actions: [
-                  IconButton(
-                    icon: Icon(Icons.edit_outlined, color: colorScheme.onSurface),
-                    onPressed: () {},
-                  ),
-                  IconButton(
-                    icon: Icon(
-                      Icons.notifications_outlined,
-                      color: colorScheme.onSurface,
-                    ),
-                    onPressed: () {},
-                  ),
-                ],
-              ),
-              SliverList(
-                delegate: SliverChildBuilderDelegate(
-                      (_, int index) {
-                    return Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        CustomTabBar(
-                          tabController: tabContoller,
-                        )
-                      ],
-                    );
-                  },
-                  childCount: 1,
-                ),
-              ),
-            ];
-          },
-          body: TabBarView(
-            children: <Widget>[
-              Text("FIRST TAB"),
-              Text("SECOND TAB"),
-              Text("THIRD TAB"),
-            ],
-          ),
-        ),
+    final userCubit = context.read<BaseCubit<List<BlogEntity>>>();
+
+    return Scaffold(
+      appBar: AppBar(title: const Text('Users')),
+      body: BlocBuilder<BaseCubit<List<BlogEntity>>, BaseState<List<BlogEntity>>>(
+        builder: (context, state) {
+          if (state is LoadingState<List<BlogEntity>>) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (state is SuccessState<List<BlogEntity>>) {
+            final blogs = state.data;
+            return ListView.builder(
+              itemCount: blogs.length,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  title: Text(blogs[index].title),
+                );
+              },
+            );
+          } else if (state is ErrorState<List<BlogEntity>>) {
+            return Center(child: Text(state.message));
+          }
+          return const Center(child: Text('Press button to load users.'));
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => userCubit.loadData(), // 👈 loadData của BaseCubit
+        child: const Icon(Icons.refresh),
       ),
     );
   }
+
 }
 

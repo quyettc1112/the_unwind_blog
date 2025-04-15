@@ -8,6 +8,7 @@ import 'package:iconly/iconly.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:the_unwind_blog/core/config/theme/app_colors.dart';
+import 'package:the_unwind_blog/domain/entities/blog_unwind_entity.dart';
 import 'package:the_unwind_blog/presentation/home_screen/pages/home_screen.dart';
 import 'package:the_unwind_blog/presentation/mark_screen/pages/bookmark_screen.dart';
 import 'package:the_unwind_blog/presentation/post_screen/pages/post_screen.dart';
@@ -17,19 +18,20 @@ import 'package:the_unwind_blog/service_locator.dart';
 
 import 'common/bloc/blog_provider.dart';
 import 'common/bloc/theme_cubit.dart';
+import 'core/base_state/base_list_cubit.dart';
 import 'core/config/theme/app_theme.dart';
+import 'domain/entities/user_entity.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   HydratedBloc.storage = await HydratedStorage.build(
     storageDirectory:
-    kIsWeb
-        ? HydratedStorageDirectory.web
-        : HydratedStorageDirectory((await getTemporaryDirectory()).path),
+        kIsWeb
+            ? HydratedStorageDirectory.web
+            : HydratedStorageDirectory((await getTemporaryDirectory()).path),
   );
   await initializeDependencies();
   runApp(MyApp());
-
 }
 
 enum _SelectedTab { home, favorite, add, search, person }
@@ -43,17 +45,20 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider<ThemeCubit>(create: (context) => ThemeCubit()),
-        ChangeNotifierProvider(create: (context) => BlogProvider())
+        ChangeNotifierProvider(create: (context) => BlogProvider()),
+        BlocProvider<BaseCubit<List<BlogEntity>>>(
+          create: (_) => sl<BaseCubit<List<BlogEntity>>>(),
+        ),
       ],
       child: BlocBuilder<ThemeCubit, ThemeMode>(
         builder:
             (context, mode) => MaterialApp(
-          theme: AppTheme.lightTheme,
-          darkTheme: AppTheme.darkTheme,
-          themeMode: mode,
-          debugShowCheckedModeBanner: false,
-          home: const HomePage(),
-        ),
+              theme: AppTheme.lightTheme,
+              darkTheme: AppTheme.darkTheme,
+              themeMode: mode,
+              debugShowCheckedModeBanner: false,
+              home: const HomePage(),
+            ),
       ),
     );
   }
@@ -84,12 +89,11 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       extendBody: true,
-      body: _screens[_selectedTab.index],  // Display the selected screen
+      body: _screens[_selectedTab.index], // Display the selected screen
       bottomNavigationBar: CrystalNavigationBar(
         currentIndex: _SelectedTab.values.indexOf(_selectedTab),
         height: 10,
@@ -115,10 +119,7 @@ class _HomePageState extends State<HomePage> {
             unselectedIcon: IconlyLight.home,
             selectedColor: Colors.white,
             badge: Badge(
-              label: Text(
-                "9+",
-                style: TextStyle(color: Colors.white),
-              ),
+              label: Text("9+", style: TextStyle(color: Colors.white)),
             ),
           ),
           // Search

@@ -17,7 +17,7 @@ class BlogRemoteDataSourceImpl implements BlogRemoteDataSource {
   @override
   Future<List<BlogUnwindModel>> getAllBlogs() async {
     try {
-      final response = await dio.get('/blog'); // ✅ Đổi path phù hợp API bạn
+      final response = await dio.get('/public/blogs'); // ✅ Đổi path phù hợp API bạn
       final List<dynamic> data = response.data;
       return data.map((e) => BlogUnwindModel.fromJson(e)).toList();
     } on DioException catch (e) {
