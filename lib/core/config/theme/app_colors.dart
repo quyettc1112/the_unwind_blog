@@ -12,4 +12,5 @@ class AppColors {
   static const darkGrey = Color(0xff343434);
   static const red_button = Color(0xffF15951);
   static const purple_cassel = Color(0xFFB9C2FF);
+  static const white = Color(0xffffffff);
 }

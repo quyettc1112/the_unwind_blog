@@ -5,8 +5,8 @@ import 'app_colors.dart';
 
 class AppTheme {
   static final lightTheme = ThemeData(
-    primaryColor: AppColors.background_white,
-    scaffoldBackgroundColor: AppColors.background_white,
+    primaryColor: AppColors.white,
+    scaffoldBackgroundColor: AppColors.white,
     fontFamily: 'Inter',
     brightness: Brightness.light,
     inputDecorationTheme: InputDecorationTheme(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:the_unwind_blog/domain/entities/blog_entity.dart';
+
 class BlogCard extends StatefulWidget {
   final Blog blog;
   final bool isBookmarked;
@@ -21,7 +22,8 @@ class BlogCard extends StatefulWidget {
   State<BlogCard> createState() => _BlogCardState();
 }
 
-class _BlogCardState extends State<BlogCard> with SingleTickerProviderStateMixin {
+class _BlogCardState extends State<BlogCard>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;
 
@@ -32,9 +34,10 @@ class _BlogCardState extends State<BlogCard> with SingleTickerProviderStateMixin
       vsync: this,
       duration: const Duration(milliseconds: 150),
     );
-    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.97).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-    );
+    _scaleAnimation = Tween<double>(
+      begin: 1.0,
+      end: 0.97,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
   }
 
   @override
@@ -63,7 +66,7 @@ class _BlogCardState extends State<BlogCard> with SingleTickerProviderStateMixin
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
     final colorScheme = theme.colorScheme;
-    
+
     return GestureDetector(
       onTapDown: (_) => _controller.forward(),
       onTapUp: (_) {
@@ -74,21 +77,19 @@ class _BlogCardState extends State<BlogCard> with SingleTickerProviderStateMixin
       child: AnimatedBuilder(
         animation: _scaleAnimation,
         builder: (context, child) {
-          return Transform.scale(
-            scale: _scaleAnimation.value,
-            child: child,
-          );
+          return Transform.scale(scale: _scaleAnimation.value, child: child);
         },
-        child: widget.isHorizontal
-            ? _buildHorizontalCard(textTheme, colorScheme)
-            : _buildVerticalCard(textTheme, colorScheme),
+        child:
+            widget.isHorizontal
+                ? _buildHorizontalCard(textTheme, colorScheme)
+                : _buildVerticalCard(textTheme, colorScheme),
       ),
     );
   }
 
   Widget _buildVerticalCard(TextTheme textTheme, ColorScheme colorScheme) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 8),
+      margin: const EdgeInsets.only(left: 5, right: 5, bottom: 20),
       decoration: BoxDecoration(
         color: Theme.of(context).cardTheme.color,
         borderRadius: BorderRadius.circular(12),
@@ -123,10 +124,11 @@ class _BlogCardState extends State<BlogCard> with SingleTickerProviderStateMixin
                         color: colorScheme.surfaceVariant,
                         child: Center(
                           child: CircularProgressIndicator(
-                            value: loadingProgress.expectedTotalBytes != null
-                                ? loadingProgress.cumulativeBytesLoaded /
-                                    loadingProgress.expectedTotalBytes!
-                                : null,
+                            value:
+                                loadingProgress.expectedTotalBytes != null
+                                    ? loadingProgress.cumulativeBytesLoaded /
+                                        loadingProgress.expectedTotalBytes!
+                                    : null,
                             color: colorScheme.primary,
                           ),
                         ),
@@ -135,13 +137,13 @@ class _BlogCardState extends State<BlogCard> with SingleTickerProviderStateMixin
                   ),
                 ),
               ),
-              
+
               // Bookmark button
               Positioned(
-                top: 12,
-                right: 12,
+                top: 10,
+                right: 10,
                 child: AnimatedScale(
-                  scale: widget.isBookmarked ? 1.0 : 0.9,
+                  scale: widget.isBookmarked ? 0.8 : 0.7,
                   duration: const Duration(milliseconds: 200),
                   child: Container(
                     decoration: BoxDecoration(
@@ -153,45 +155,30 @@ class _BlogCardState extends State<BlogCard> with SingleTickerProviderStateMixin
                         widget.isBookmarked
                             ? Icons.bookmark
                             : Icons.bookmark_border,
-                        color: widget.isBookmarked
-                            ? colorScheme.primary
-                            : colorScheme.onSurface,
+                        color:
+                            widget.isBookmarked
+                                ? colorScheme.primary
+                                : colorScheme.onSurface,
                       ),
                       onPressed: () => widget.onToggleBookmark(widget.blog.id),
                       iconSize: 20,
-                      padding: const EdgeInsets.all(5),
+                      padding: const EdgeInsets.all(3),
                       constraints: const BoxConstraints(),
                     ),
                   ),
                 ),
               ),
-              
-              // Category tag
-              if (widget.blog.tags.isNotEmpty)
-                Positioned(
-                  bottom: 12,
-                  left: 12,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                    decoration: BoxDecoration(
-                      color: colorScheme.primary,
-                      borderRadius: BorderRadius.circular(6),
-                    ),
-                    child: Text(
-                      widget.blog.tags.first,
-                      style: textTheme.labelSmall?.copyWith(
-                        color: colorScheme.onPrimary,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
             ],
           ),
-          
+
           // Content
           Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.only(
+              left: 5,
+              right: 5,
+              top: 12,
+              bottom: 12,
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -205,7 +192,7 @@ class _BlogCardState extends State<BlogCard> with SingleTickerProviderStateMixin
                   overflow: TextOverflow.ellipsis,
                 ),
                 const SizedBox(height: 8),
-                
+
                 // Subtitle
                 Text(
                   widget.blog.subtitle,
@@ -216,7 +203,7 @@ class _BlogCardState extends State<BlogCard> with SingleTickerProviderStateMixin
                   overflow: TextOverflow.ellipsis,
                 ),
                 const SizedBox(height: 16),
-                
+
                 // Author row
                 Row(
                   children: [
@@ -240,7 +227,7 @@ class _BlogCardState extends State<BlogCard> with SingleTickerProviderStateMixin
                       ),
                     ),
                     const SizedBox(width: 8),
-                    
+
                     // Author name and date
                     Expanded(
                       child: Column(
@@ -261,7 +248,7 @@ class _BlogCardState extends State<BlogCard> with SingleTickerProviderStateMixin
                         ],
                       ),
                     ),
-                    
+
                     // Stats
                     Row(
                       children: [
@@ -294,6 +281,58 @@ class _BlogCardState extends State<BlogCard> with SingleTickerProviderStateMixin
                     ),
                   ],
                 ),
+                const SizedBox(height: 16),
+
+                // Category tag
+                if (widget.blog.tags.isNotEmpty)
+                  Row(
+                    children: [
+                      // Tag hiển thị tối đa 3
+                      ...widget.blog.tags.take(3).map((tag) {
+                        return Container(
+                          margin: const EdgeInsets.only(right: 6),
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(
+                              color: Colors.grey.shade400,
+                              width: 1,
+                            ),
+                          ),
+                          child: Text(
+                            tag,
+                            style: textTheme.labelSmall?.copyWith(
+                              color: Colors.grey.shade700,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        );
+                      }),
+
+                      // Nếu còn nhiều tag → hiển thị "+N"
+                      if (widget.blog.tags.length > 3)
+                        Container(
+                          margin: const EdgeInsets.only(right: 6),
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(
+                              color: Colors.grey.shade400,
+                              width: 1,
+                            ),
+                          ),
+                          child: Text(
+                            '+${widget.blog.tags.length - 3}',
+                            style: textTheme.labelSmall?.copyWith(
+                              color: Colors.grey.shade700,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
               ],
             ),
           ),
@@ -328,13 +367,10 @@ class _BlogCardState extends State<BlogCard> with SingleTickerProviderStateMixin
               ),
               child: SizedBox(
                 width: 120,
-                child: Image.network(
-                  widget.blog.imageUrl,
-                  fit: BoxFit.cover,
-                ),
+                child: Image.network(widget.blog.imageUrl, fit: BoxFit.cover),
               ),
             ),
-            
+
             // Content
             Expanded(
               child: Padding(
@@ -358,31 +394,36 @@ class _BlogCardState extends State<BlogCard> with SingleTickerProviderStateMixin
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
-                        
+
                         // Bookmark
                         IconButton(
                           icon: Icon(
                             widget.isBookmarked
                                 ? Icons.bookmark
                                 : Icons.bookmark_border,
-                            color: widget.isBookmarked
-                                ? colorScheme.primary
-                                : colorScheme.onSurface,
+                            color:
+                                widget.isBookmarked
+                                    ? colorScheme.primary
+                                    : colorScheme.onSurface,
                           ),
-                          onPressed: () => widget.onToggleBookmark(widget.blog.id),
+                          onPressed:
+                              () => widget.onToggleBookmark(widget.blog.id),
                           padding: EdgeInsets.zero,
                           constraints: const BoxConstraints(),
                           iconSize: 20,
                         ),
                       ],
                     ),
-                    
+
                     const SizedBox(height: 4),
-                    
+
                     // Category tag
                     if (widget.blog.tags.isNotEmpty)
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 6,
+                          vertical: 3,
+                        ),
                         decoration: BoxDecoration(
                           color: colorScheme.primary.withOpacity(0.1),
                           borderRadius: BorderRadius.circular(4),
@@ -395,15 +436,17 @@ class _BlogCardState extends State<BlogCard> with SingleTickerProviderStateMixin
                           ),
                         ),
                       ),
-                    
+
                     const SizedBox(height: 8),
-                    
+
                     // Author and date
                     Row(
                       children: [
                         CircleAvatar(
                           radius: 12,
-                          backgroundImage: NetworkImage(widget.blog.authorImageUrl),
+                          backgroundImage: NetworkImage(
+                            widget.blog.authorImageUrl,
+                          ),
                         ),
                         const SizedBox(width: 8),
                         Expanded(
