@@ -91,7 +91,10 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBody: true,
-      body: _screens[_selectedTab.index], // Display the selected screen
+      body: IndexedStack(
+        index: _selectedTab.index,
+        children: _screens,
+      ),
       bottomNavigationBar: CrystalNavigationBar(
         currentIndex: _SelectedTab.values.indexOf(_selectedTab),
         height: 10,
@@ -111,7 +114,6 @@ class _HomePageState extends State<HomePage> {
         ],
         onTap: _handleIndexChanged,
         items: [
-          // Home
           CrystalNavigationBarItem(
             icon: IconlyBold.home,
             unselectedIcon: IconlyLight.home,
@@ -120,25 +122,21 @@ class _HomePageState extends State<HomePage> {
               label: Text("9+", style: TextStyle(color: Colors.white)),
             ),
           ),
-          // Search
           CrystalNavigationBarItem(
             icon: IconlyBold.search,
             unselectedIcon: IconlyLight.search,
             selectedColor: Colors.white,
           ),
-          // Add
           CrystalNavigationBarItem(
             icon: IconlyBold.plus,
             unselectedIcon: IconlyLight.plus,
             selectedColor: Colors.white,
           ),
-          // Favorite (Mark)
           CrystalNavigationBarItem(
             icon: IconlyBold.bookmark,
             unselectedIcon: IconlyLight.bookmark,
             selectedColor: Colors.white,
           ),
-          // Profile
           CrystalNavigationBarItem(
             icon: IconlyBold.user_2,
             unselectedIcon: IconlyLight.user,

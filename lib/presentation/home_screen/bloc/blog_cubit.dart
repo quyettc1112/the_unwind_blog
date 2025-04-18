@@ -3,16 +3,12 @@ import 'package:the_unwind_blog/domain/usecase/get_blogs_usecase.dart';
 
 import '../../../domain/entities/blog_unwind_entity.dart';
 import '../../../untils/resource.dart';
-import '../../state_renderer/state_render_impl.dart';
-import '../../state_renderer/state_renderer.dart';
-
 class BlogCubit extends Cubit<Resource<BlogPaginatedEntity>> {
   final GetBlogsUseCase _getBlogsUseCase;
 
   BlogCubit(this._getBlogsUseCase) : super(const Loading());
 
   Future<void> getBlogs() async {
-    print("📢 getBlogs() CALLED"); // 👈 Thêm dòng này
     emit(Loading()); // Không dùng const
 
     final result = await _getBlogsUseCase.call();

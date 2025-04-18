@@ -130,7 +130,7 @@ class _HomeScreenState extends State<HomeScreen>
           controller: _tabController,
           children: <Widget>[
             buildTabContent(
-              blogs: blogProvider.filteredBlogs,
+              blogs: blogProvider.blogs,
               blogProvider: blogProvider,
             ),
             buildTabContent(
