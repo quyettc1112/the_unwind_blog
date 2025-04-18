@@ -9,6 +9,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:the_unwind_blog/core/config/theme/app_colors.dart';
 import 'package:the_unwind_blog/domain/entities/blog_unwind_entity.dart';
+import 'package:the_unwind_blog/presentation/home_screen/bloc/blog_cubit.dart';
 import 'package:the_unwind_blog/presentation/home_screen/pages/home_screen.dart';
 import 'package:the_unwind_blog/presentation/mark_screen/pages/bookmark_screen.dart';
 import 'package:the_unwind_blog/presentation/post_screen/pages/post_screen.dart';
@@ -18,7 +19,6 @@ import 'package:the_unwind_blog/service_locator.dart';
 
 import 'common/bloc/blog_provider.dart';
 import 'common/bloc/theme_cubit.dart';
-import 'core/base_state/base_list_cubit.dart';
 import 'core/config/theme/app_theme.dart';
 import 'domain/entities/user_entity.dart';
 
@@ -46,9 +46,7 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider<ThemeCubit>(create: (context) => ThemeCubit()),
         ChangeNotifierProvider(create: (context) => BlogProvider()),
-        BlocProvider<BaseCubit<List<BlogEntity>>>(
-          create: (_) => sl<BaseCubit<List<BlogEntity>>>(),
-        ),
+        BlocProvider<BlogCubit>(create: (_) => sl<BlogCubit>()), // auto call API),
       ],
       child: BlocBuilder<ThemeCubit, ThemeMode>(
         builder:

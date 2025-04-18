@@ -1,15 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:the_unwind_blog/common/helper/is_dark_mode.dart';
-import 'package:the_unwind_blog/domain/entities/blog_unwind_entity.dart';
+import 'package:the_unwind_blog/presentation/home_screen/bloc/blog_cubit.dart';
 
-import '../../../common/widgets/appbar/app_bar.dart';
-import '../../../common/widgets/tabbar/custom_tabbar.dart';
-import '../../../core/base_state/base_list_cubit.dart';
-import '../../../core/base_state/base_list_state.dart';
-import '../../../core/config/theme/app_colors.dart';
-import '../../../domain/entities/user_entity.dart';
+import '../../../untils/logger_settigns.dart';
+import '../../home_screen/bloc/blog_state.dart';
+import '../../state_renderer/state_render_impl.dart';
 
 class SearchScreen extends StatefulWidget {
   @override
@@ -18,46 +13,58 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen>
     with SingleTickerProviderStateMixin {
-  late TabController tabContoller;
 
 
   @override
   void initState() {
-    tabContoller = new TabController(vsync: this, length: 3);
+    getUsers();
     super.initState();
   }
-  @override
-  Widget build(BuildContext context) {
-    final userCubit = context.read<BaseCubit<List<BlogEntity>>>();
 
-    return Scaffold(
-      appBar: AppBar(title: const Text('Users')),
-      body: BlocBuilder<BaseCubit<List<BlogEntity>>, BaseState<List<BlogEntity>>>(
-        builder: (context, state) {
-          if (state is LoadingState<List<BlogEntity>>) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (state is SuccessState<List<BlogEntity>>) {
-            final blogs = state.data;
-            return ListView.builder(
-              itemCount: blogs.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  title: Text(blogs[index].title),
-                );
-              },
-            );
-          } else if (state is ErrorState<List<BlogEntity>>) {
-            return Center(child: Text(state.message));
-          }
-          return const Center(child: Text('Press button to load users.'));
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => userCubit.loadData(), // 👈 loadData của BaseCubit
-        child: const Icon(Icons.refresh),
-      ),
-    );
+  void getUsers() {
+    context.read<BlogCubit>().getBlogs();
   }
 
+  @override
+  Widget build(BuildContext context) {
+    return BlocConsumer<BlogCubit, FlowState>(listener: (context, state) {
+      if (state is BlogLoadingState) {
+        logger.i("LOADİNG");
+      } else if (state is BlogLoadedState) {
+        logger.i("LOADED");
+      } else if (state is BlogErrorState) {
+        logger.i("LOADED");
+      }
+      print("XXX STATE:" + state.toString());
+    }, builder: (context, state) {
+      return Scaffold(
+        body: state.getScreenWidget(context, _getContent(context, state), () {
+          context.read<BlogCubit>().getBlogs();
+        }),
+      );
+    });
+  }
+
+}
+
+Widget _getContent(BuildContext context, FlowState state) {
+  if (state is ContentState) {
+    logger.i("ALOO");
+    logger.i(state.data);
+
+    return ListView.builder(
+        itemBuilder: (context, index) {
+          if (state is ContentState) {
+            final user = state.data[index];
+            return ListTile(
+              leading: Image.network(user.avatar.toString()),
+              title: Text(user.name.toString()),
+              subtitle: Text(user.createdAt!.substring(10).toString()),
+            );
+          }
+        },
+        itemCount: state is ContentState ? state.data.length : 0);
+  }
+  return Container();
 }
 

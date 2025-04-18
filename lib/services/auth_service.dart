@@ -7,6 +7,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_appauth/flutter_appauth.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:the_unwind_blog/core/constants/constant.dart';
 
 import '../common/models/auth_id_token.dart';
 import '../common/models/auth_user.dart';
@@ -63,15 +64,15 @@ class AuthService {
   Future<String> init() async {
     return errorHandler(() async {
       final securedRefreshToken =
-          await secureStoreage.read(key: AUTH_REFRESH_TOKEN_KEY);
+          await secureStoreage.read(key: Constant.AUTH_REFRESH_TOKEN_KEY);
 
       if (securedRefreshToken == null) {
         return 'You need to login!';
       }
 
       final response = await appAuth.token(
-        TokenRequest(AUTH_CLIENT_ID, AUTH_REDIRECT_URI,
-            issuer: AUTH_ISSUER, refreshToken: securedRefreshToken),
+        TokenRequest(Constant.AUTH_CLIENT_ID, Constant.AUTH_REDIRECT_URI,
+            issuer: Constant.AUTH_ISSUER, refreshToken: securedRefreshToken),
       );
 
       return await _setLocalVariables(response);
@@ -96,7 +97,7 @@ class AuthService {
 
       if (result.refreshToken != null) {
         await secureStoreage.write(
-            key: AUTH_REFRESH_TOKEN_KEY, value: result.refreshToken);
+            key: Constant.AUTH_REFRESH_TOKEN_KEY, value: result.refreshToken);
       }
 
       _loginInfo.isLoggedIn = true;
@@ -127,8 +128,8 @@ class AuthService {
     return errorHandler(() async {
       // Create Request
       final authorizationTokenRequest = AuthorizationTokenRequest(
-          AUTH_CLIENT_ID, AUTH_REDIRECT_URI,
-          issuer: AUTH_ISSUER,
+          Constant.AUTH_CLIENT_ID, Constant.AUTH_REDIRECT_URI,
+          issuer: Constant.AUTH_ISSUER,
           scopes: ['openid', 'profile', 'email', 'offline_access'],
           promptValues: ['login']);
 
@@ -148,12 +149,12 @@ class AuthService {
   /// ---------------------------------------
 
   logout() async {
-    await secureStoreage.delete(key: AUTH_REFRESH_TOKEN_KEY);
+    await secureStoreage.delete(key: Constant.AUTH_REFRESH_TOKEN_KEY);
 
     final request = EndSessionRequest(
         idTokenHint: idTokenRaw!,
-        issuer: AUTH_ISSUER,
-        postLogoutRedirectUrl: AUTH_REDIRECT_URI);
+        issuer: Constant.AUTH_ISSUER,
+        postLogoutRedirectUrl: Constant.AUTH_REDIRECT_URI);
 
     await appAuth.endSession(request);
     _loginInfo.isLoggedIn = false;
@@ -177,8 +178,8 @@ class AuthService {
   /// ---------------------------------------
 
   Future<AuthUser> getUserDetails(String accessToken) async {
-    final url = Uri.https(AUTH_DOMAIN,
-        '/auth/realms/${AUTH_REALMS}/protocol/openid-connect/userinfo');
+    final url = Uri.https(Constant.AUTH_DOMAIN,
+        '/auth/realms/${Constant.AUTH_REALMS}/protocol/openid-connect/userinfo');
 
     final response = await http.get(
       url,
