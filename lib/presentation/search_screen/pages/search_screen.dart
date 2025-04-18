@@ -1,8 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:the_unwind_blog/presentation/home_screen/bloc/blog_cubit.dart';
 
+import '../../../domain/entities/blog_unwind_entity.dart';
 import '../../../untils/logger_settigns.dart';
+import '../../../untils/resource.dart';
 import '../../home_screen/bloc/blog_state.dart';
 import '../../state_renderer/state_render_impl.dart';
 
@@ -17,26 +21,35 @@ class _SearchScreenState extends State<SearchScreen>
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await context.read<BlogCubit>().getBlogs();
+    context.read<BlogCubit>().getBlogs();
+  }
 
-      final currentState = context.read<BlogCubit>().state;
-
-      if (currentState is ContentState) {
-        print("✅ getBlogs() đã gọi xong.");
-        print("📦 API dữ liệu trả về:");
-        for (var blog in currentState.data) {
-          print("📄 Blog: ${blog.title} | ${blog.createdAt}");
-        }
-      } else if (currentState is ErrorState) {
-        print("❌ Lỗi khi gọi API: ${currentState.message}");
-      }
-    });
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold();
+    return BlocListener<BlogCubit, Resource<BlogPaginatedEntity>>(
+      listener: (context, state) {
+        print("📡 ĐÃ NHẬN STATE: ${state.runtimeType}");
+
+        state.when(
+          onLoading: () => print("🔄 Đang tải dữ liệu..."),
+          onSuccess: (data) {
+            print("✅ Có ${data.content.length} blogs");
+            for (var blog in data.content) {
+              print("📝 Blog: ${blog.title} | Created at: ${blog.createdAt}");
+            }
+          },
+          onError: (msg) => print("❌ Lỗi: $msg"),
+        );
+      },
+      child: Scaffold(
+        body: Center(child: Text("Search Screen")),
+      ),
+    );
   }
 
 

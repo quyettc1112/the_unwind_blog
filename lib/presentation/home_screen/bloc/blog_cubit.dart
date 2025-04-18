@@ -1,34 +1,31 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:the_unwind_blog/domain/usecase/get_blogs_usecase.dart';
 
+import '../../../domain/entities/blog_unwind_entity.dart';
+import '../../../untils/resource.dart';
 import '../../state_renderer/state_render_impl.dart';
 import '../../state_renderer/state_renderer.dart';
 
-class BlogCubit extends Cubit<FlowState> {
-  BlogCubit({required GetBlogsUseCase getUsersUseCase}): _getBlogsUseCase = getUsersUseCase,
-        super(InitalState());
-
+class BlogCubit extends Cubit<Resource<BlogPaginatedEntity>> {
   final GetBlogsUseCase _getBlogsUseCase;
 
+  BlogCubit(this._getBlogsUseCase) : super(const Loading());
+
   Future<void> getBlogs() async {
-    emit(LoadingState(
-        stateRendererType: StateRendererType.POPUP_LOADING_STATE,
-        message: "Loading...."));
+    print("📢 getBlogs() CALLED"); // 👈 Thêm dòng này
+    emit(Loading()); // Không dùng const
 
-    try {
-      final result = await _getBlogsUseCase.call();
+    final result = await _getBlogsUseCase.call();
 
-      result.fold((failure) {
-        emit(ErrorState(
-            stateRendererType: StateRendererType.POPUP_ERROR_STATE,
-            message: failure.message));
-      }, (users) {
-        emit(ContentState(users));
-      });
-    } catch (error) {
-      emit(ErrorState(
-          stateRendererType: StateRendererType.POPUP_ERROR_STATE,
-          message: "Hello Failure $error"));
-    }
+    result.fold(
+          (failure) {
+        print("📛 Emit Error: ${failure.message}"); // 👈 log lỗi
+        emit(Error(failure.message));
+      },
+          (data) {
+        print("📦 Emit Success with ${data.content.length} blogs"); // 👈 log thành công
+        emit(Success(data));
+      },
+    );
   }
 }

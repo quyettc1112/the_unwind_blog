@@ -49,7 +49,7 @@ Future<void> initializeDependencies() async {
   sl.registerLazySingleton<AppServiceClient>(() => AppServiceClient(sl<Dio>()));
 
   // Cubit
-  sl.registerFactory(() => BlogCubit(getUsersUseCase: sl()));
+  sl.registerFactory(() => BlogCubit(sl<GetBlogsUseCase>()));
 
   // Use Case
   sl.registerLazySingleton<GetBlogsUseCase>(() => GetBlogsUseCase(sl()));
