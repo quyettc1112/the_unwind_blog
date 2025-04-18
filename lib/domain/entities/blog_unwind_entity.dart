@@ -31,7 +31,7 @@ class BlogCategoryEntity {
   final String name;
   final String slug;
 
-  const BlogCategoryEntity({
+  BlogCategoryEntity({
     required this.id,
     required this.name,
     required this.slug,
@@ -52,6 +52,7 @@ class BlogCategoryEntity {
       'slug': slug,
     };
   }
+
 }
 
 class BlogAuthorEntity {
@@ -60,7 +61,7 @@ class BlogAuthorEntity {
   final String displayName;
   final String createdAt;
 
-  const BlogAuthorEntity({
+  BlogAuthorEntity({
     required this.username,
     required this.email,
     required this.displayName,
@@ -75,7 +76,6 @@ class BlogAuthorEntity {
       createdAt: json['createdAt'],
     );
   }
-
   Map<String, dynamic> toJson() {
     return {
       'username': username,
@@ -84,6 +84,7 @@ class BlogAuthorEntity {
       'createdAt': createdAt,
     };
   }
+
 }
 
 class TableOfContentEntity {
@@ -91,7 +92,7 @@ class TableOfContentEntity {
   final int level;
   final int orderNumber;
 
-  const TableOfContentEntity({
+  TableOfContentEntity({
     required this.text,
     required this.level,
     required this.orderNumber,
@@ -104,7 +105,6 @@ class TableOfContentEntity {
       orderNumber: json['orderNumber'],
     );
   }
-
   Map<String, dynamic> toJson() {
     return {
       'text': text,
@@ -113,3 +113,16 @@ class TableOfContentEntity {
     };
   }
 }
+
+class BlogPaginatedEntity {
+  final List<BlogEntity> content;
+  final int totalPages;
+  final int totalElements;
+
+  BlogPaginatedEntity({
+    required this.content,
+    required this.totalPages,
+    required this.totalElements,
+  });
+}
+

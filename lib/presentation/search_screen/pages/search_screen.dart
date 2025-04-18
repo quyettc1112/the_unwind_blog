@@ -14,8 +14,34 @@ class SearchScreen extends StatefulWidget {
 class _SearchScreenState extends State<SearchScreen>
     with SingleTickerProviderStateMixin {
 
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await context.read<BlogCubit>().getBlogs();
+
+      final currentState = context.read<BlogCubit>().state;
+
+      if (currentState is ContentState) {
+        print("✅ getBlogs() đã gọi xong.");
+        print("📦 API dữ liệu trả về:");
+        for (var blog in currentState.data) {
+          print("📄 Blog: ${blog.title} | ${blog.createdAt}");
+        }
+      } else if (currentState is ErrorState) {
+        print("❌ Lỗi khi gọi API: ${currentState.message}");
+      }
+    });
+  }
 
   @override
+  Widget build(BuildContext context) {
+    return Scaffold();
+  }
+
+
+
+  /*@override
   void initState() {
     getUsers();
     super.initState();
@@ -24,26 +50,23 @@ class _SearchScreenState extends State<SearchScreen>
   void getUsers() {
     context.read<BlogCubit>().getBlogs();
   }
-
-  @override
+*/
+  /*@override
   Widget build(BuildContext context) {
     return BlocConsumer<BlogCubit, FlowState>(listener: (context, state) {
       if (state is BlogLoadingState) {
-        logger.i("LOADİNG");
+        print("LOADİNG");
       } else if (state is BlogLoadedState) {
-        logger.i("LOADED");
+        print("LOADED");
       } else if (state is BlogErrorState) {
-        logger.i("LOADED");
+        print("WTF: ${state.getMessage()}");
       }
       print("XXX STATE:" + state.toString());
     }, builder: (context, state) {
       return Scaffold(
-        body: state.getScreenWidget(context, _getContent(context, state), () {
-          context.read<BlogCubit>().getBlogs();
-        }),
       );
     });
-  }
+  }*/
 
 }
 

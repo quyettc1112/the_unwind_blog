@@ -243,6 +243,19 @@ class $AssetsFontsGen {
       ];
 }
 
+class $AssetsJsonGen {
+  const $AssetsJsonGen();
+
+  /// File path: assets/json/error.json
+  String get error => 'assets/json/error.json';
+
+  /// File path: assets/json/loading-spinner.json
+  String get loadingSpinner => 'assets/json/loading-spinner.json';
+
+  /// List of all assets
+  List<String> get values => [error, loadingSpinner];
+}
+
 class $AssetsVectorsGen {
   const $AssetsVectorsGen();
 
@@ -257,5 +270,6 @@ class Assets {
   const Assets._();
 
   static const $AssetsFontsGen fonts = $AssetsFontsGen();
+  static const $AssetsJsonGen json = $AssetsJsonGen();
   static const $AssetsVectorsGen vectors = $AssetsVectorsGen();
 }

@@ -1,4 +1,5 @@
-import 'package:the_unwind_blog/domain/entities/blog_unwind_entity.dart';
+import '../../domain/entities/blog_unwind_entity.dart';
+
 class BlogUnwindModel extends BlogEntity {
   BlogUnwindModel({
     required super.id,
@@ -9,9 +10,9 @@ class BlogUnwindModel extends BlogEntity {
     required super.thumbnailUrl,
     required super.createdAt,
     required super.isPublished,
-    required super.tableOfContents,
     super.category,
     super.author,
+    required super.tableOfContents,
   });
 
   factory BlogUnwindModel.fromJson(Map<String, dynamic> json) {
@@ -24,15 +25,15 @@ class BlogUnwindModel extends BlogEntity {
       thumbnailUrl: json['thumbnailUrl'],
       createdAt: json['createdAt'],
       isPublished: json['isPublished'],
-      tableOfContents: (json['tableOfContents'] as List<dynamic>)
-          .map((e) => TableOfContentEntity.fromJson(e))
-          .toList(),
       category: json['categoryDto'] != null
           ? BlogCategoryEntity.fromJson(json['categoryDto'])
           : null,
       author: json['authorDto'] != null
           ? BlogAuthorEntity.fromJson(json['authorDto'])
           : null,
+      tableOfContents: (json['tableOfContents'] as List<dynamic>)
+          .map((e) => TableOfContentEntity.fromJson(e))
+          .toList(),
     );
   }
 
@@ -46,9 +47,26 @@ class BlogUnwindModel extends BlogEntity {
       'thumbnailUrl': thumbnailUrl,
       'createdAt': createdAt,
       'isPublished': isPublished,
-      'tableOfContents': tableOfContents.map((e) => e.toJson()).toList(),
       'categoryDto': category?.toJson(),
       'authorDto': author?.toJson(),
+      'tableOfContents': tableOfContents.map((e) => e.toJson()).toList(),
     };
   }
+
+  BlogEntity toEntity() {
+    return BlogEntity(
+      id: id,
+      title: title,
+      slug: slug,
+      content: content,
+      description: description,
+      thumbnailUrl: thumbnailUrl,
+      createdAt: createdAt,
+      isPublished: isPublished,
+      category: category,
+      author: author,
+      tableOfContents: tableOfContents,
+    );
+  }
 }
+

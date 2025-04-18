@@ -21,7 +21,7 @@ class BlogCubit extends Cubit<FlowState> {
       result.fold((failure) {
         emit(ErrorState(
             stateRendererType: StateRendererType.POPUP_ERROR_STATE,
-            message: "Hello Failure"));
+            message: failure.message));
       }, (users) {
         emit(ContentState(users));
       });
