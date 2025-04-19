@@ -24,9 +24,20 @@ class _AppServiceClient implements AppServiceClient {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<BlogPaginatedResponseModel> getBlogs() async {
+  Future<BlogPaginatedResponseModel> getBlogs({
+    required int pageNo,
+    required int pageSize,
+    String? title,
+    int? categoryId,
+  }) async {
     final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{
+      r'PageNo': pageNo,
+      r'PageSize': pageSize,
+      r'Title': title,
+      r'categoryId': categoryId,
+    };
+    queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<BlogPaginatedResponseModel>(Options(
@@ -36,7 +47,7 @@ class _AppServiceClient implements AppServiceClient {
     )
         .compose(
           _dio.options,
-          '/public/blogs?PageSize=20',
+          '/public/blogs',
           queryParameters: queryParameters,
           data: _data,
         )

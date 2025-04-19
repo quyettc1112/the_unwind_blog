@@ -19,7 +19,6 @@ class _SearchScreenState extends State<SearchScreen>
   @override
   void initState() {
     super.initState();
-    context.read<BlogCubit>().getBlogs();
   }
 
   @override
@@ -29,22 +28,6 @@ class _SearchScreenState extends State<SearchScreen>
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<BlogCubit, Resource<BlogPaginatedEntity>>(
-      listener: (context, state) {
-        print("📡 ĐÃ NHẬN STATE: ${state.runtimeType}");
-
-        state.when(
-          onLoading: () => print("🔄 Đang tải dữ liệu..."),
-          onSuccess: (data) {
-            print("✅ Có ${data.content.length} blogs");
-            for (var blog in data.content) {
-              print("📝 Blog: ${blog.title} | Created at: ${blog.createdAt}");
-            }
-          },
-          onError: (msg) => print("❌ Lỗi: $msg"),
-        );
-      },
-      child: Scaffold(body: Center(child: Text("Search Screen"))),
-    );
+    return Scaffold();
   }
 }

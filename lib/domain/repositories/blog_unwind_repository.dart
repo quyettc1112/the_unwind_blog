@@ -6,5 +6,10 @@ import '../../data/models/blog_paginated_model.dart';
 import '../../untils/typedef.dart';
 
 abstract interface class BlogUnwindRepository {
-  ResultFuture<BlogPaginatedEntity> getBlogs();
+  ResultFuture<BlogPaginatedEntity> getBlogs({
+    required int pageNo,
+    required int pageSize,
+    String? title,
+    int? categoryId,
+  });
 }

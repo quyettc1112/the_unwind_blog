@@ -33,7 +33,7 @@ class SliverBasicAppBar extends StatelessWidget {
 
     final appBarBackgroundColor = context.isDarkMode
         ? AppColors.background_black
-        : AppColors.background_white;
+        : AppColors.white;
 
     return SliverAppBar(
       expandedHeight: 200.0,  // Chiều cao tối đa khi mở rộng

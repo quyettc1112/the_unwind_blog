@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -121,25 +122,23 @@ class _BlogUnwindCardState extends State<BlogUnwindCard>
                 ),
                 child: AspectRatio(
                   aspectRatio: 16 / 9,
-                  child: Image.network(
-                    widget.blogs.thumbnailUrl,
+                  child: CachedNetworkImage(
+                    imageUrl: widget.blogs.thumbnailUrl,
                     fit: BoxFit.cover,
-                    loadingBuilder: (context, child, loadingProgress) {
-                      if (loadingProgress == null) return child;
-                      return Container(
-                        color: colorScheme.surfaceVariant,
-                        child: Center(
-                          child: CircularProgressIndicator(
-                            value:
-                                loadingProgress.expectedTotalBytes != null
-                                    ? loadingProgress.cumulativeBytesLoaded /
-                                        loadingProgress.expectedTotalBytes!
-                                    : null,
-                            color: colorScheme.primary,
+                    placeholder:
+                        (context, url) => Container(
+                          color: colorScheme.surfaceVariant,
+                          child: Center(
+                            child: CircularProgressIndicator(
+                              color: colorScheme.primary,
+                            ),
                           ),
                         ),
-                      );
-                    },
+                    errorWidget:
+                        (context, url, error) => Container(
+                          color: colorScheme.surfaceVariant,
+                          child: Icon(Icons.error, color: colorScheme.error),
+                        ),
                   ),
                 ),
               ),

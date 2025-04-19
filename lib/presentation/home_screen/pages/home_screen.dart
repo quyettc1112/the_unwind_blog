@@ -64,7 +64,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     _animationController.forward();
 
     // Fetch blogs from the API
-    context.read<BlogCubit>().getBlogs();
+    context.read<BlogCubit>().getBlogs(
+      pageNo: 1,
+      pageSize: 5,
+      title: null,
+      categoryId: null,
+    );
   }
 
   @override
@@ -107,7 +112,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               backgroundColor:
                   context.isDarkMode
                       ? AppColors.background_black
-                      : AppColors.background_white,
+                      : AppColors.white,
               title: Row(
                 children: [
                   Text(

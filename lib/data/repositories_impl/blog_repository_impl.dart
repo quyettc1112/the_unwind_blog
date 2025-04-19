@@ -15,13 +15,24 @@ import '../models/blog_paginated_model.dart';
 class BlogRepositoryImpl implements BlogUnwindRepository {
   BlogURemoteSource _remoteDataSource;
   NetworkInfo _networkInfo;
+
   BlogRepositoryImpl(this._remoteDataSource, this._networkInfo);
 
   @override
-  ResultFuture<BlogPaginatedEntity> getBlogs() async {
+  ResultFuture<BlogPaginatedEntity> getBlogs({
+    required int pageNo,
+    required int pageSize,
+    String? title,
+    int? categoryId,
+  }) async {
     if (await _networkInfo.isConnected) {
       try {
-        final response = await _remoteDataSource.getBlogs(); // BlogPaginatedResponseModel
+        final response = await _remoteDataSource.getBlogs(
+          pageNo: pageNo,
+          pageSize: pageSize,
+          title: title,
+          categoryId: categoryId,
+        ); // BlogPaginatedResponseModel
         return Right(response.toEntity());
       } catch (e) {
         return Left(Failure(message: e.toString(), statusCode: 400));
@@ -30,6 +41,4 @@ class BlogRepositoryImpl implements BlogUnwindRepository {
       return Left(Failure(message: "Internet Yok", statusCode: 400));
     }
   }
-
-
 }

@@ -47,7 +47,7 @@ class _CustomTabBarState extends State<CustomTabBar>
       color:
           context.isDarkMode
               ? AppColors.background_black
-              : AppColors.background_white,
+              : AppColors.white,
       child: Row(
         children: [
           Expanded(
@@ -56,7 +56,7 @@ class _CustomTabBarState extends State<CustomTabBar>
               isScrollable: false,
               labelColor:
                   context.isDarkMode
-                      ? AppColors.background_white
+                      ? AppColors.white
                       : AppColors.background_black,
               unselectedLabelColor: Colors.grey,
               overlayColor: MaterialStateProperty.all(Colors.transparent),

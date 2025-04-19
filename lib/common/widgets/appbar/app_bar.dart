@@ -35,7 +35,7 @@ class BasicAppBar extends StatelessWidget implements PreferredSizeWidget {
 
     final appBarBackgroundColor = context.isDarkMode
         ? AppColors.background_black  // Light theme primary color
-        : AppColors.background_white ;  // Dark theme secondary color
+        : AppColors.white ;  // Dark theme secondary color
 
     return AppBar(
       backgroundColor: appBarBackgroundColor,
