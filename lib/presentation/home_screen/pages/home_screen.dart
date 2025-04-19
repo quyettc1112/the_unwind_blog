@@ -66,7 +66,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     // Fetch blogs from the API
     context.read<BlogCubit>().getBlogs(
       pageNo: 1,
-      pageSize: 5,
+      pageSize: 20,
       title: null,
       categoryId: null,
     );
