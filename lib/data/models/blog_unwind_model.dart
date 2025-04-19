@@ -49,7 +49,7 @@ class BlogUnwindModel extends BlogEntity {
       'isPublished': isPublished,
       'categoryDto': category?.toJson(),
       'authorDto': author?.toJson(),
-      'tableOfContents': tableOfContents.map((e) => e.toJson()).toList(),
+      'tableOfContents': tableOfContents?.map((e) => e.toJson()).toList(),
     };
   }
 

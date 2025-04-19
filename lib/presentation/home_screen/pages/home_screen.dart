@@ -1,16 +1,21 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:the_unwind_blog/common/helper/is_dark_mode.dart';
 import 'package:the_unwind_blog/common/widgets/appbar/app_bar.dart';
 import 'package:the_unwind_blog/common/widgets/state/empty_state.dart';
 import 'package:the_unwind_blog/common/widgets/tabbar/custom_tabbar.dart';
+import 'package:the_unwind_blog/presentation/home_screen/widgets/blog_unwind_card.dart';
 
 import '../../../common/bloc/blog_provider.dart';
 import '../../../core/config/theme/app_colors.dart';
 import '../../../domain/entities/blog_entity.dart';
+import '../../../domain/entities/blog_unwind_entity.dart';
 import '../../../gen/assets.gen.dart';
+import '../../../untils/resource.dart';
+import '../bloc/blog_cubit.dart';
 import '../widgets/blog_card.dart';
 import '../widgets/filter_chips.dart';
 
@@ -19,8 +24,7 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen>
-    with TickerProviderStateMixin {
+class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   bool _isLoading = true;
   late final AnimationController _animationController;
   late final Animation<double> _fadeAnimation;
@@ -58,6 +62,9 @@ class _HomeScreenState extends State<HomeScreen>
     });
 
     _animationController.forward();
+
+    // Fetch blogs from the API
+    context.read<BlogCubit>().getBlogs();
   }
 
   @override
@@ -69,11 +76,24 @@ class _HomeScreenState extends State<HomeScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: _buildHomeContent());
+    return BlocBuilder<BlogCubit, Resource<BlogPaginatedEntity>>(
+      builder: (context, state) {
+        return state.when(
+          onLoading: () => Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          ),
+          onError: (msg) => Scaffold(
+            body: Center(child: Text("❌ Lỗi: $msg")),
+          ),
+          onSuccess: (data) => Scaffold(
+            body: _buildHomeContent(data), // ✅ truyền đúng data vào đây
+          ),
+        );
+      },
+    );
   }
 
-  Widget _buildHomeContent() {
-    final blogProvider = Provider.of<BlogProvider>(context);
+  Widget _buildHomeContent(BlogPaginatedEntity data) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
@@ -129,48 +149,34 @@ class _HomeScreenState extends State<HomeScreen>
         body: TabBarView(
           controller: _tabController,
           children: <Widget>[
-            buildTabContent(
-              blogs: blogProvider.blogs,
-              blogProvider: blogProvider,
-            ),
-            buildTabContent(
-              blogs: blogProvider.blogs,
-              blogProvider: blogProvider,
-            ),
-            buildTabContent(
-              blogs: blogProvider.blogs,
-              blogProvider: blogProvider,
-            ),
+            buildTabContent(blogs: data.content),
+            buildTabContent(blogs: data.content),
+            buildTabContent(blogs: data.content),
           ],
         ),
       ),
     );
   }
 
-  Widget buildTabContent({
-    required List<Blog> blogs,
-    required BlogProvider blogProvider,
-  }) {
+  Widget buildTabContent({required List<BlogEntity> blogs}) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8),
       child: buildBlogList(
         blogs: blogs,
         fadeAnimation: _fadeAnimation,
-        isBlogBookmarked: blogProvider.isBlogBookmarked,
-        onToggleBookmark: blogProvider.toggleBookmark,
-        onTapBlog: _navigateToBlogDetail,
-        blogProvider: blogProvider,
+        onTapBlog: (id) {
+          print("👆 Tapped blog with ID: $id");
+        },
       ),
     );
   }
 
   Widget buildBlogList({
-    required List<Blog> blogs,
+    required List<BlogEntity> blogs,
     required Animation<double> fadeAnimation,
-    required Future<bool> Function(String blogId) isBlogBookmarked,
-    required void Function(String blogId) onToggleBookmark,
-    required void Function(String blogId) onTapBlog,
-    required BlogProvider blogProvider,
+    /*  required Future<bool> Function(String blogId) isBlogBookmarked,
+    required void Function(String blogId) onToggleBookmark,*/
+    required void Function(int blogId) onTapBlog,
   }) {
     if (blogs.isEmpty) {
       return Center(child: Text('Không có blog nào để hiển thị'));
@@ -183,20 +189,13 @@ class _HomeScreenState extends State<HomeScreen>
       itemBuilder: (context, index) {
         final adjustedIndex = index;
         final blog = blogs[adjustedIndex];
-        return FutureBuilder<bool>(
-          future: isBlogBookmarked(blog.id),
-          builder: (context, snapshot) {
-            final isBookmarked = snapshot.data ?? false;
-            return FadeTransition(
-              opacity: fadeAnimation,
-              child: BlogCard(
-                blog: blog,
-                isBookmarked: isBookmarked,
-                onToggleBookmark: onToggleBookmark,
-                onTap: onTapBlog,
-              ),
-            );
-          },
+        return FadeTransition(
+          opacity: fadeAnimation,
+          child: BlogUnwindCard(
+            blogs: blog,
+            onTap: onTapBlog,
+            // isBookmarked: false, // nếu có field này thì set mặc định
+          ),
         );
       },
     );

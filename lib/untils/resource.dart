@@ -19,48 +19,20 @@ class Error<T> extends Resource<T> {
 
 /// Extension method for clean pattern matching
 extension ResourceExtension<T> on Resource<T> {
-  void when({
-    required void Function() onLoading,
-    required void Function(T data) onSuccess,
-    required void Function(String message) onError,
+  R when<R>({
+    required R Function() onLoading,
+    required R Function(String message) onError,
+    required R Function(T data) onSuccess,
   }) {
     if (this is Loading<T>) {
-      onLoading();
-    } else if (this is Success<T>) {
-      onSuccess((this as Success<T>).data);
+      return onLoading();
     } else if (this is Error<T>) {
-      onError((this as Error<T>).message);
-    }
-  }
-
-  void maybeWhen({
-    void Function()? onLoading,
-    void Function(T data)? onSuccess,
-    void Function(String message)? onError,
-    required void Function() orElse,
-  }) {
-    if (this is Loading<T> && onLoading != null) {
-      onLoading();
-    } else if (this is Success<T> && onSuccess != null) {
-      onSuccess((this as Success<T>).data);
-    } else if (this is Error<T> && onError != null) {
-      onError((this as Error<T>).message);
+      return onError((this as Error).message);
+    } else if (this is Success<T>) {
+      return onSuccess((this as Success<T>).data);
     } else {
-      orElse();
-    }
-  }
-
-  void whenOrNull({
-    void Function()? onLoading,
-    void Function(T data)? onSuccess,
-    void Function(String message)? onError,
-  }) {
-    if (this is Loading<T>) {
-      onLoading?.call();
-    } else if (this is Success<T>) {
-      onSuccess?.call((this as Success<T>).data);
-    } else if (this is Error<T>) {
-      onError?.call((this as Error<T>).message);
+      throw Exception("Unhandled Resource state");
     }
   }
 }
+

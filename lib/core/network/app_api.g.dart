@@ -36,7 +36,7 @@ class _AppServiceClient implements AppServiceClient {
     )
         .compose(
           _dio.options,
-          '/public/blogs',
+          '/public/blogs?PageSize=20',
           queryParameters: queryParameters,
           data: _data,
         )

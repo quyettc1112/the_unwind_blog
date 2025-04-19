@@ -10,7 +10,7 @@ import '../constants/constant.dart';
 part 'app_api.g.dart';
 
 class ApisEndpoint {
-  static const String getBlogs = "/public/blogs";
+  static const String getBlogs = "/public/blogs?PageSize=20";
 }
 
 @RestApi(baseUrl: Constant.baseUrl)

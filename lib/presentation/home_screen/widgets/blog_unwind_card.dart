@@ -6,16 +6,17 @@ import 'package:the_unwind_blog/services/data_service.dart';
 
 class BlogUnwindCard extends StatefulWidget {
   final BlogEntity blogs;
-  final bool isBookmarked;
-  final Function(int) onToggleBookmark;
+
+  /*  final bool isBookmarked;
+  final Function(int) onToggleBookmark;*/
   final Function(int) onTap;
   final bool isHorizontal;
 
   const BlogUnwindCard({
     Key? key,
     required this.blogs,
-    required this.isBookmarked,
-    required this.onToggleBookmark,
+    /*    required this.isBookmarked,
+    required this.onToggleBookmark,*/
     required this.onTap,
     this.isHorizontal = false,
   }) : super(key: key);
@@ -50,6 +51,7 @@ class _BlogUnwindCardState extends State<BlogUnwindCard>
     _controller.dispose();
     super.dispose();
   }
+
   String _formatDateFromString(String dateStr) {
     final inputFormat = DateFormat('dd/MM/yyyy');
     final date = inputFormat.parse(dateStr); // 👈 chuyển chuỗi sang DateTime
@@ -86,7 +88,7 @@ class _BlogUnwindCardState extends State<BlogUnwindCard>
         builder: (context, child) {
           return Transform.scale(scale: _scaleAnimation.value, child: child);
         },
-        child: _buildVerticalCard(textTheme, colorScheme)
+        child: _buildVerticalCard(textTheme, colorScheme),
       ),
     );
   }
@@ -129,10 +131,10 @@ class _BlogUnwindCardState extends State<BlogUnwindCard>
                         child: Center(
                           child: CircularProgressIndicator(
                             value:
-                            loadingProgress.expectedTotalBytes != null
-                                ? loadingProgress.cumulativeBytesLoaded /
-                                loadingProgress.expectedTotalBytes!
-                                : null,
+                                loadingProgress.expectedTotalBytes != null
+                                    ? loadingProgress.cumulativeBytesLoaded /
+                                        loadingProgress.expectedTotalBytes!
+                                    : null,
                             color: colorScheme.primary,
                           ),
                         ),
@@ -147,7 +149,8 @@ class _BlogUnwindCardState extends State<BlogUnwindCard>
                 top: 10,
                 right: 10,
                 child: AnimatedScale(
-                  scale: widget.isBookmarked ? 0.8 : 0.7,
+                  // scale: widget.isBookmarked ? 0.8 : 0.7,
+                  scale: 0.7,
                   duration: const Duration(milliseconds: 200),
                   child: Container(
                     decoration: BoxDecoration(
@@ -155,7 +158,7 @@ class _BlogUnwindCardState extends State<BlogUnwindCard>
                       shape: BoxShape.circle,
                     ),
                     child: IconButton(
-                      icon: Icon(
+                      /*icon: Icon(
                         widget.isBookmarked
                             ? Icons.bookmark
                             : Icons.bookmark_border,
@@ -164,10 +167,15 @@ class _BlogUnwindCardState extends State<BlogUnwindCard>
                             ? colorScheme.primary
                             : colorScheme.onSurface,
                       ),
-                      onPressed: () => widget.onToggleBookmark(widget.blogs.id),
+                      onPressed: () => widget.onToggleBookmark(widget.blogs.id),*/
+                      icon: const Icon(
+                        Icons.bookmark_border,
+                        color: Colors.black,
+                      ),
                       iconSize: 20,
                       padding: const EdgeInsets.all(3),
                       constraints: const BoxConstraints(),
+                      onPressed: () => {},
                     ),
                   ),
                 ),
@@ -238,7 +246,7 @@ class _BlogUnwindCardState extends State<BlogUnwindCard>
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            widget.blogs.author!.displayName.toString(),
+                            widget.blogs.author?.displayName ?? 'Unknown',
                             style: textTheme.bodyMedium?.copyWith(
                               fontWeight: FontWeight.bold,
                             ),
@@ -295,7 +303,10 @@ class _BlogUnwindCardState extends State<BlogUnwindCard>
                       ...tags.take(3).map((tag) {
                         return Container(
                           margin: const EdgeInsets.only(right: 6),
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 5,
+                          ),
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(10),
@@ -318,7 +329,10 @@ class _BlogUnwindCardState extends State<BlogUnwindCard>
                       if (tags.length > 3)
                         Container(
                           margin: const EdgeInsets.only(right: 6),
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 5,
+                          ),
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(10),
@@ -344,6 +358,4 @@ class _BlogUnwindCardState extends State<BlogUnwindCard>
       ),
     );
   }
-
-
 }

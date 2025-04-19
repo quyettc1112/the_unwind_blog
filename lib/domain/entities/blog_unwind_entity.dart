@@ -9,7 +9,7 @@ class BlogEntity {
   final bool isPublished;
   final BlogCategoryEntity? category;
   final BlogAuthorEntity? author;
-  final List<TableOfContentEntity> tableOfContents;
+  final List<TableOfContentEntity>? tableOfContents;
 
   BlogEntity({
     required this.id,
