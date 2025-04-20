@@ -10,6 +10,7 @@ class BlogCubit extends Cubit<Resource<BlogPaginatedEntity>> {
 
   BlogCubit(this._getBlogsUseCase) : super(const Loading());
 
+  /// Gọi khi mở màn đầu tiên (nếu vẫn muốn show UI bằng state)
   Future<void> getBlogs({
     required int pageNo,
     required int pageSize,
@@ -28,13 +29,41 @@ class BlogCubit extends Cubit<Resource<BlogPaginatedEntity>> {
     );
 
     result.fold(
-      (failure) {
+          (failure) {
         print("📛 Emit Error: ${failure.message}");
         emit(Error(failure.message));
       },
-      (data) {
+          (data) {
         print("📦 Emit Success with ${data.content.length} blogs");
         emit(Success(data));
+      },
+    );
+  }
+
+  /// Gọi từ UI sử dụng `infinite_scroll_pagination`
+  Future<BlogPaginatedEntity?> fetchBlogPage(
+      int pageNo,
+      int pageSize, {
+        String? title,
+        int? categoryId,
+      }) async {
+    final result = await _getBlogsUseCase.call(
+      GetBlogsParams(
+        pageNo: pageNo,
+        pageSize: pageSize,
+        title: title,
+        categoryId: categoryId,
+      ),
+    );
+
+    return result.fold(
+          (failure) {
+        print("📛 Load error: ${failure.message}");
+        return null;
+      },
+          (data) {
+        print("📦 Load page $pageNo: ${data.content.length} blogs");
+        return data;
       },
     );
   }

@@ -1,23 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:the_unwind_blog/common/helper/is_dark_mode.dart';
-import 'package:the_unwind_blog/common/widgets/appbar/app_bar.dart';
-import 'package:the_unwind_blog/common/widgets/state/empty_state.dart';
 import 'package:the_unwind_blog/common/widgets/tabbar/custom_tabbar.dart';
 import 'package:the_unwind_blog/presentation/home_screen/widgets/blog_unwind_card.dart';
-
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import '../../../common/bloc/blog_provider.dart';
 import '../../../core/config/theme/app_colors.dart';
-import '../../../domain/entities/blog_entity.dart';
 import '../../../domain/entities/blog_unwind_entity.dart';
-import '../../../gen/assets.gen.dart';
 import '../../../untils/resource.dart';
 import '../bloc/blog_cubit.dart';
 import '../widgets/blog_card.dart';
-import '../widgets/filter_chips.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -25,10 +19,11 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
-  bool _isLoading = true;
   late final AnimationController _animationController;
   late final Animation<double> _fadeAnimation;
   late TabController _tabController;
+  static const _pageSize = 10;
+  late final PagingController<int, BlogEntity> _pagingController;
 
   @override
   void initState() {
@@ -43,6 +38,22 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
     _tabController = TabController(length: 3, vsync: this);
 
+    _pagingController = PagingController<int, BlogEntity>(
+      getNextPageKey: (state) => (state.keys?.last ?? 0) + 1,
+      fetchPage: (pageKey) async {
+        const pageSize = 10;
+        final result = await context.read<BlogCubit>().fetchBlogPage(
+          pageKey,
+          pageSize,
+          // Có thể thêm title/categoryId nếu cần
+        );
+        if (result == null) {
+          throw Exception("Lỗi khi tải blog");
+        }
+        return result.content;
+      },
+    );
+
     // Initialize blogs data
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _initData();
@@ -50,19 +61,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   }
 
   Future<void> _initData() async {
-    setState(() {
-      _isLoading = true;
-    });
-
-    final blogProvider = Provider.of<BlogProvider>(context, listen: false);
-    await blogProvider.initBlogs();
-
-    setState(() {
-      _isLoading = false;
-    });
-
     _animationController.forward();
-
     // Fetch blogs from the API
     context.read<BlogCubit>().getBlogs(
       pageNo: 1,
@@ -76,6 +75,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   void dispose() {
     _animationController.dispose();
     _tabController.dispose();
+    _pagingController.dispose();
     super.dispose();
   }
 
@@ -84,15 +84,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     return BlocBuilder<BlogCubit, Resource<BlogPaginatedEntity>>(
       builder: (context, state) {
         return state.when(
-          onLoading: () => Scaffold(
-            body: Center(child: CircularProgressIndicator()),
-          ),
-          onError: (msg) => Scaffold(
-            body: Center(child: Text("❌ Lỗi: $msg")),
-          ),
-          onSuccess: (data) => Scaffold(
-            body: _buildHomeContent(data), // ✅ truyền đúng data vào đây
-          ),
+          onLoading:
+              () => Scaffold(body: Center(child: CircularProgressIndicator())),
+          onError: (msg) => Scaffold(body: Center(child: Text("❌ Lỗi: $msg"))),
+          onSuccess:
+              (data) => Scaffold(
+                body: _buildHomeContent(data), // ✅ truyền đúng data vào đây
+              ),
         );
       },
     );
@@ -166,41 +164,41 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   Widget buildTabContent({required List<BlogEntity> blogs}) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8),
-      child: buildBlogList(
-        blogs: blogs,
+      child: buildBlogPagedList(
         fadeAnimation: _fadeAnimation,
         onTapBlog: (id) {
           print("👆 Tapped blog with ID: $id");
         },
+        pagingController: _pagingController,
       ),
     );
   }
 
-  Widget buildBlogList({
-    required List<BlogEntity> blogs,
+  Widget buildBlogPagedList({
     required Animation<double> fadeAnimation,
-    /*  required Future<bool> Function(String blogId) isBlogBookmarked,
-    required void Function(String blogId) onToggleBookmark,*/
     required void Function(int blogId) onTapBlog,
+    required PagingController<int, BlogEntity> pagingController,
   }) {
-    if (blogs.isEmpty) {
-      return Center(child: Text('Không có blog nào để hiển thị'));
-    }
-    return ListView.builder(
-      padding: EdgeInsets.only(top: 10, bottom: 90),
-      physics: const NeverScrollableScrollPhysics(),
-      shrinkWrap: true,
-      itemCount: blogs.length,
-      itemBuilder: (context, index) {
-        final adjustedIndex = index;
-        final blog = blogs[adjustedIndex];
-        return FadeTransition(
-          opacity: fadeAnimation,
-          child: BlogUnwindCard(
-            blogs: blog,
-            onTap: onTapBlog,
-            // isBookmarked: false, // nếu có field này thì set mặc định
+    return PagingListener(
+      controller: _pagingController,
+      builder: (context, state, fetchNextPage) {
+        return PagedListView<int, BlogEntity>.separated(
+          state: state,
+          fetchNextPage: fetchNextPage,
+          padding: const EdgeInsets.only(top: 10, bottom: 90),
+          builderDelegate: PagedChildBuilderDelegate<BlogEntity>(
+            animateTransitions: true,
+            itemBuilder:
+                (context, blog, index) =>
+                    BlogUnwindCard(blogs: blog, onTap: (id) => {}),
+            firstPageErrorIndicatorBuilder:
+                (_) => const Text('❌ Lỗi khi tải blog'),
+            noItemsFoundIndicatorBuilder:
+                (_) => const Text('🤷 Không có blog nào'),
+            newPageProgressIndicatorBuilder:
+                (_) => const Center(child: CircularProgressIndicator()),
           ),
+          separatorBuilder: (_, __) => const Divider(),
         );
       },
     );

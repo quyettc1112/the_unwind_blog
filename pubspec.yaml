@@ -68,6 +68,7 @@ dependencies:
   another_flushbar: ^1.12.30
   lottie:
   cached_network_image:
+  infinite_scroll_pagination:
 
 dev_dependencies:
   flutter_test:
