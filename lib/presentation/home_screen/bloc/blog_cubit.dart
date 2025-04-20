@@ -7,6 +7,7 @@ import '../../../untils/resource.dart';
 
 class BlogCubit extends Cubit<Resource<BlogPaginatedEntity>> {
   final GetBlogsUseCase _getBlogsUseCase;
+  int? _totalPages;
 
   BlogCubit(this._getBlogsUseCase) : super(const Loading());
 

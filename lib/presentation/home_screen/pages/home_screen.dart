@@ -22,8 +22,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   late final AnimationController _animationController;
   late final Animation<double> _fadeAnimation;
   late TabController _tabController;
-  static const _pageSize = 10;
   late final PagingController<int, BlogEntity> _pagingController;
+  int? _totalPages;
 
   @override
   void initState() {
@@ -39,17 +39,20 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     _tabController = TabController(length: 3, vsync: this);
 
     _pagingController = PagingController<int, BlogEntity>(
-      getNextPageKey: (state) => (state.keys?.last ?? 0) + 1,
+      getNextPageKey: (state) {
+        final lastKey = state.keys?.last ?? 0;
+        if (_totalPages == null) {return lastKey + 1;}
+        if (lastKey >= _totalPages!) {return null;}
+        return lastKey + 1;
+      },
       fetchPage: (pageKey) async {
         const pageSize = 10;
         final result = await context.read<BlogCubit>().fetchBlogPage(
           pageKey,
           pageSize,
-          // Có thể thêm title/categoryId nếu cần
         );
-        if (result == null) {
-          throw Exception("Lỗi khi tải blog");
-        }
+        if (result == null) throw Exception("Lỗi khi tải blog");
+        _totalPages ??= result.totalPages;
         return result.content;
       },
     );
@@ -62,10 +65,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   Future<void> _initData() async {
     _animationController.forward();
-    // Fetch blogs from the API
+    // Fetch first page blogs from the API
     context.read<BlogCubit>().getBlogs(
       pageNo: 1,
-      pageSize: 20,
+      pageSize: 10,
       title: null,
       categoryId: null,
     );
