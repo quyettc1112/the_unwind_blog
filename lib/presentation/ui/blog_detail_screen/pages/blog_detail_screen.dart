@@ -407,11 +407,12 @@ class _BlogDetailScreenState extends State<BlogDetailScreen>
                 mini: true,
                 backgroundColor: colorScheme.primary,
                 onPressed: () {
-                  _scrollController.animateTo(
-                    0,
-                    duration: const Duration(milliseconds: 500),
-                    curve: Curves.easeInOut,
-                  );
+                  // _scrollController.animateTo(
+                  //   0,
+                  //   duration: const Duration(milliseconds: 500),
+                  //   curve: Curves.easeInOut,
+                  // );
+                  _showTocBottomSheet(context, blog.tableOfContents ?? []);
                 },
                 child: Icon(
                   Icons.arrow_upward,
@@ -477,16 +478,54 @@ class _BlogDetailScreenState extends State<BlogDetailScreen>
     }
   }
 
-  void _generateKeysFromToc(List<TableOfContents> toc) {
-    for (var item in toc) {
-      final id = _generateIdFromText(item.text ?? '');
+  void _showTocBottomSheet(BuildContext context, List<TableOfContents> tocList) {
+    showModalBottomSheet(
+      context: context,
+      builder: (_) => ListView.builder(
+        itemCount: tocList.length,
+        itemBuilder: (_, index) {
+          final toc = tocList[index];
+          final id = _generateAnchorIdFromText(toc.text ?? '');
+
+          return ListTile(
+            title: Text(toc.text ?? ''),
+            contentPadding: EdgeInsets.only(left: 16 + (toc.level! - 1) * 12),
+            onTap: () {
+              Navigator.pop(context);
+              _scrollToAnchor(id);
+            },
+          );
+        },
+      ),
+    );
+  }
+
+  void _scrollToAnchor(String id) {
+    final key = _anchorKeys[id];
+    if (key?.currentContext != null) {
+      Scrollable.ensureVisible(
+        key!.currentContext!,
+        duration: const Duration(milliseconds: 400),
+        curve: Curves.easeInOut,
+      );
+    } else {
+      print("⚠️ Không tìm thấy anchor: $id");
+    }
+  }
+
+
+  void _initAnchorKeys(List<TableOfContents> tocList) {
+    for (var toc in tocList) {
+      final id = _generateAnchorIdFromText(toc.text ?? '');
       _anchorKeys[id] = GlobalKey();
     }
   }
-  String _generateIdFromText(String text) {
+
+  String _generateAnchorIdFromText(String text) {
     return text
         .toLowerCase()
-        .replaceAll(RegExp(r'[^a-z0-9]+'), '-')
-        .replaceAll(RegExp(r'^\-+|\-+$'), '');
+        .replaceAll(RegExp(r'[^\w\s-]'), '')
+        .replaceAll(' ', '-')
+        .replaceAll(RegExp(r'-+'), '-');
   }
 }
