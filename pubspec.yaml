@@ -68,6 +68,7 @@ dependencies:
   cached_network_image:
   infinite_scroll_pagination:
   freezed_annotation:
+  flutter_html:
 
 dev_dependencies:
   flutter_test:
