@@ -1,7 +1,8 @@
 import 'package:dartz/dartz.dart';
 
 import 'package:the_unwind_blog/core/error/failures.dart';
-import 'package:the_unwind_blog/data/datasource/blog_unwind/blog_u_remote_data_source.dart';
+import 'package:the_unwind_blog/data/models/blog_detail_model.dart';
+import 'package:the_unwind_blog/domain/entities/blog_detail_entity.dart';
 
 import 'package:the_unwind_blog/domain/entities/blog_unwind_entity.dart';
 import 'package:the_unwind_blog/untils/typedef.dart';
@@ -33,6 +34,20 @@ class BlogRepositoryImpl implements BlogUnwindRepository {
           title: title,
           categoryId: categoryId,
         ); // BlogPaginatedResponseModel
+        return Right(response.toEntity());
+      } catch (e) {
+        return Left(Failure(message: e.toString(), statusCode: 400));
+      }
+    } else {
+      return Left(Failure(message: "Internet Yok", statusCode: 400));
+    }
+  }
+
+  @override
+  ResultFuture<BlogDetailEntity> getBlogDetail(int blogId) async {
+    if (await _networkInfo.isConnected) {
+      try {
+        final response = await _remoteDataSource.getBlogDetail(blogId: blogId);
         return Right(response.toEntity());
       } catch (e) {
         return Left(Failure(message: e.toString(), statusCode: 400));

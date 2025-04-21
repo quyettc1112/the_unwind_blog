@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-import '../../../data/models/blog_unwind_model.dart';
+import '../../../../data/models/blog_unwind_model.dart';
 
 abstract class BlogState extends Equatable {
   const BlogState();

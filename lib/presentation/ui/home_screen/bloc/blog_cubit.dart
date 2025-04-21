@@ -1,9 +1,10 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:the_unwind_blog/domain/usecase/get_blogs_usecase.dart';
 
-import '../../../data/dto/get_blogs_params.dart';
-import '../../../domain/entities/blog_unwind_entity.dart';
-import '../../../untils/resource.dart';
+import '../../../../data/dto/get_blogs_params.dart';
+import '../../../../domain/entities/blog_unwind_entity.dart';
+import '../../../../untils/resource.dart';
+
 
 class BlogCubit extends Cubit<Resource<BlogPaginatedEntity>> {
   final GetBlogsUseCase _getBlogsUseCase;

@@ -9,18 +9,39 @@ import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:the_unwind_blog/core/config/theme/app_colors.dart';
 import 'package:the_unwind_blog/domain/entities/blog_unwind_entity.dart';
-import 'package:the_unwind_blog/presentation/home_screen/bloc/blog_cubit.dart';
-import 'package:the_unwind_blog/presentation/home_screen/pages/home_screen.dart';
-import 'package:the_unwind_blog/presentation/mark_screen/pages/bookmark_screen.dart';
-import 'package:the_unwind_blog/presentation/post_screen/pages/post_screen.dart';
-import 'package:the_unwind_blog/presentation/profile_screen/pages/profile_screen.dart';
-import 'package:the_unwind_blog/presentation/search_screen/pages/search_screen.dart';
+import 'package:the_unwind_blog/presentation/ui/blog_detail_screen/pages/blog_detail_screen.dart';
+import 'package:the_unwind_blog/presentation/ui/home_screen/bloc/blog_cubit.dart';
+import 'package:the_unwind_blog/presentation/ui/home_screen/pages/home_screen.dart';
+import 'package:the_unwind_blog/presentation/ui/mark_screen/pages/bookmark_screen.dart';
+import 'package:the_unwind_blog/presentation/ui/post_screen/pages/post_screen.dart';
+import 'package:the_unwind_blog/presentation/ui/profile_screen/pages/profile_screen.dart';
+import 'package:the_unwind_blog/presentation/ui/search_screen/pages/search_screen.dart';
 import 'package:the_unwind_blog/service_locator.dart';
 
 import 'common/bloc/blog_provider.dart';
 import 'common/bloc/theme_cubit.dart';
 import 'core/config/theme/app_theme.dart';
 import 'domain/entities/user_entity.dart';
+
+final router = GoRouter(
+  initialLocation: '/',
+  routes: [
+    GoRoute(
+      path: '/',
+      name: 'home',
+      builder: (context, state) => const HomePage(),
+    ),
+    GoRoute(
+      path: '/blog/:id',
+      name: 'blogDetail',
+      builder: (context, state) {
+        final blogId = int.tryParse(state.pathParameters['id'] ?? '0') ?? 0;
+        return BlogDetailScreen(blogId: blogId);
+      },
+    ),
+  ],
+);
+
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -46,16 +67,16 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider<ThemeCubit>(create: (context) => ThemeCubit()),
         ChangeNotifierProvider(create: (context) => BlogProvider()),
-        BlocProvider<BlogCubit>(create: (_) => sl<BlogCubit>()), // auto call API),
+        BlocProvider<BlogCubit>(create: (_) => sl<BlogCubit>()),
       ],
       child: BlocBuilder<ThemeCubit, ThemeMode>(
         builder:
-            (context, mode) => MaterialApp(
+            (context, mode) => MaterialApp.router(
               theme: AppTheme.lightTheme,
               darkTheme: AppTheme.darkTheme,
               themeMode: mode,
               debugShowCheckedModeBanner: false,
-              home: const HomePage(),
+              routerConfig: router,
             ),
       ),
     );

@@ -1,37 +1,47 @@
-import 'package:dio/dio.dart';
+import 'package:the_unwind_blog/data/models/blog_detail_model.dart';
 
-import '../../../core/error/exceptions.dart';
+import '../../../core/network/app_api.dart';
+import '../../models/blog_paginated_model.dart';
 import '../../models/blog_unwind_model.dart';
 
-abstract class BlogRemoteDataSource {
-  Future<List<BlogUnwindModel>> getAllBlogs();
+abstract class BlogURemoteSource {
+  Future<BlogPaginatedResponseModel> getBlogs({
+    required int pageNo,
+    required int pageSize,
+    String? title,
+    int? categoryId,
+  });
 
-  Future<BlogUnwindModel> getBlogById(int id);
+  Future<BlogDetailModel> getBlogDetail({
+    required int blogId,
+  });
+
 }
 
-class BlogRemoteDataSourceImpl implements BlogRemoteDataSource {
-  final Dio dio;
+class BlogURemoteSourceImp implements BlogURemoteSource {
+  BlogURemoteSourceImp(this._appServiceClient);
 
-  BlogRemoteDataSourceImpl(this.dio);
+  AppServiceClient _appServiceClient;
 
   @override
-  Future<List<BlogUnwindModel>> getAllBlogs() async {
-    try {
-      final response = await dio.get('/public/blogs'); // ✅ Đổi path phù hợp API bạn
-      final List<dynamic> data = response.data;
-      return data.map((e) => BlogUnwindModel.fromJson(e)).toList();
-    } on DioException catch (e) {
-      throw ServerException.fromDioException(e);
-    }
+  Future<BlogPaginatedResponseModel> getBlogs({
+    required int pageNo,
+    required int pageSize,
+    String? title,
+    int? categoryId,
+  }) async {
+    return await _appServiceClient.getBlogs(
+      pageNo: pageNo,
+      pageSize: pageSize,
+      title: title,
+      categoryId: categoryId,
+    );
   }
 
   @override
-  Future<BlogUnwindModel> getBlogById(int id) async {
-    try {
-      final response = await dio.get('/blog/$id'); // ✅ API get by id
-      return BlogUnwindModel.fromJson(response.data);
-    } on DioException catch (e) {
-      throw ServerException.fromDioException(e);
-    }
+  Future<BlogDetailModel> getBlogDetail({required int blogId}) async {
+    return await _appServiceClient.getBlogDetail(blogId);
   }
+
+
 }

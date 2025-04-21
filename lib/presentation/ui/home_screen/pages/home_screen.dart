@@ -1,17 +1,18 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:the_unwind_blog/common/helper/is_dark_mode.dart';
 import 'package:the_unwind_blog/common/widgets/tabbar/custom_tabbar.dart';
-import 'package:the_unwind_blog/presentation/home_screen/widgets/blog_unwind_card.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import '../../../common/bloc/blog_provider.dart';
-import '../../../core/config/theme/app_colors.dart';
-import '../../../domain/entities/blog_unwind_entity.dart';
-import '../../../untils/resource.dart';
+import '../../../../common/bloc/blog_provider.dart';
+import '../../../../core/config/theme/app_colors.dart';
+import '../../../../domain/entities/blog_unwind_entity.dart';
+import '../../../../untils/resource.dart';
 import '../bloc/blog_cubit.dart';
 import '../widgets/blog_card.dart';
+import '../widgets/blog_unwind_card.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -87,8 +88,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     return BlocBuilder<BlogCubit, Resource<BlogPaginatedEntity>>(
       builder: (context, state) {
         return state.when(
-          onLoading:
-              () => Scaffold(body: Center(child: CircularProgressIndicator())),
+          onLoading: () => Scaffold(body: Center(child: CircularProgressIndicator())),
           onError: (msg) => Scaffold(body: Center(child: Text("❌ Lỗi: $msg"))),
           onSuccess:
               (data) => Scaffold(
@@ -169,9 +169,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       padding: const EdgeInsets.symmetric(horizontal: 8),
       child: buildBlogPagedList(
         fadeAnimation: _fadeAnimation,
-        onTapBlog: (id) {
-          print("👆 Tapped blog with ID: $id");
-        },
         pagingController: _pagingController,
       ),
     );
@@ -179,7 +176,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   Widget buildBlogPagedList({
     required Animation<double> fadeAnimation,
-    required void Function(int blogId) onTapBlog,
     required PagingController<int, BlogEntity> pagingController,
   }) {
     return PagingListener(
@@ -193,7 +189,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             animateTransitions: true,
             itemBuilder:
                 (context, blog, index) =>
-                    BlogUnwindCard(blogs: blog, onTap: (id) => {}),
+                    BlogUnwindCard(blogs: blog, onTap: (blogId) => context.push("/blog/$blogId")),
             firstPageErrorIndicatorBuilder:
                 (_) => const Text('❌ Lỗi khi tải blog'),
             noItemsFoundIndicatorBuilder:

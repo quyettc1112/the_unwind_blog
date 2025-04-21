@@ -30,7 +30,6 @@ class BlogPaginatedResponseModel {
     };
   }
 
-
 }
 
 extension BlogPaginatedResponseMapper on BlogPaginatedResponseModel {

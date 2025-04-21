@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:the_unwind_blog/common/widgets/appbar/app_bar.dart';
 
-import '../../../common/bloc/theme_cubit.dart';
+import '../../../../common/bloc/theme_cubit.dart';
 
 class ProfileScreen extends StatelessWidget {
   @override

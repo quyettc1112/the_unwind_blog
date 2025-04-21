@@ -4,12 +4,11 @@ import 'package:provider/provider.dart';
 import 'package:the_unwind_blog/common/widgets/button/basic_app_button.dart';
 import 'package:the_unwind_blog/core/config/theme/app_colors.dart';
 
-import '../../../common/bloc/blog_provider.dart';
-import '../../../common/widgets/appbar/app_bar.dart';
-import '../../../common/widgets/button/rounded_button_red.dart';
-import '../../../domain/entities/blog_entity.dart';
+import '../../../../common/bloc/blog_provider.dart';
+import '../../../../common/widgets/appbar/app_bar.dart';
+import '../../../../common/widgets/button/rounded_button_red.dart';
+import '../../../../domain/entities/blog_entity.dart';
 import '../../home_screen/widgets/blog_card.dart';
-
 class BookmarksScreen extends StatefulWidget {
   const BookmarksScreen({super.key});
 
