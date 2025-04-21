@@ -25,6 +25,7 @@ class _BlogDetailScreenState extends State<BlogDetailScreen>
   bool _isScrolled = false;
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
+  final Map<String, GlobalKey> _anchorKeys = {};
 
   @override
   void initState() {
@@ -272,94 +273,7 @@ class _BlogDetailScreenState extends State<BlogDetailScreen>
                     padding: const EdgeInsets.all(20),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      // children: [
-                      //   // Blog content
-                      //   _buildFormattedContent(widget.blog.content, textTheme, colorScheme),
-                      //
-                      //   const SizedBox(height: 24),
-                      //
-                      //   // Tags section
-                      //   Wrap(
-                      //     spacing: 8,
-                      //     runSpacing: 8,
-                      //     children: widget.blog.tags.map((tag) {
-                      //       return Container(
-                      //         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                      //         decoration: BoxDecoration(
-                      //           color: colorScheme.surfaceVariant,
-                      //           borderRadius: BorderRadius.circular(20),
-                      //         ),
-                      //         child: Text(
-                      //           '#$tag',
-                      //           style: textTheme.bodySmall?.copyWith(
-                      //             color: colorScheme.onSurfaceVariant,
-                      //           ),
-                      //         ),
-                      //       );
-                      //     }).toList(),
-                      //   ),
-                      //
-                      //   const SizedBox(height: 32),
-                      //
 
-                      //
-                      //   const SizedBox(height: 32),
-                      //
-                      //   // Author section
-                      //   Container(
-                      //     padding: const EdgeInsets.all(16),
-                      //     decoration: BoxDecoration(
-                      //       color: colorScheme.surfaceVariant.withOpacity(0.3),
-                      //       borderRadius: BorderRadius.circular(16),
-                      //     ),
-                      //     child: Row(
-                      //       crossAxisAlignment: CrossAxisAlignment.start,
-                      //       children: [
-                      //         CircleAvatar(
-                      //           radius: 28,
-                      //           backgroundImage: NetworkImage(widget.blog.authorImageUrl),
-                      //         ),
-                      //         const SizedBox(width: 16),
-                      //         Expanded(
-                      //           child: Column(
-                      //             crossAxisAlignment: CrossAxisAlignment.start,
-                      //             children: [
-                      //               Text(
-                      //                 'Written by',
-                      //                 style: textTheme.bodySmall?.copyWith(
-                      //                   color: colorScheme.onSurfaceVariant,
-                      //                 ),
-                      //               ),
-                      //               const SizedBox(height: 4),
-                      //               Text(
-                      //                 widget.blog.author,
-                      //                 style: textTheme.titleMedium?.copyWith(
-                      //                   fontWeight: FontWeight.bold,
-                      //                 ),
-                      //               ),
-                      //               const SizedBox(height: 8),
-                      //               Text(
-                      //                 'Passionate writer and researcher specializing in ${widget.blog.tags.first}. Connect with me to discuss more about this topic.',
-                      //                 style: textTheme.bodyMedium,
-                      //               ),
-                      //               const SizedBox(height: 8),
-                      //               TextButton(
-                      //                 onPressed: () {
-                      //                   ScaffoldMessenger.of(context).showSnackBar(
-                      //                     const SnackBar(content: Text('Follow functionality coming soon')),
-                      //                   );
-                      //                 },
-                      //                 child: const Text('Follow'),
-                      //               ),
-                      //             ],
-                      //           ),
-                      //         ),
-                      //       ],
-                      //     ),
-                      //   ),
-                      //
-                      //   const SizedBox(height: 50),
-                      // ],
                       children: [
                         // Blog content
                         Html(
@@ -561,5 +475,18 @@ class _BlogDetailScreenState extends State<BlogDetailScreen>
     } else {
       return DateFormat('MMM d, yyyy').format(date); // → Apr 15, 2025
     }
+  }
+
+  void _generateKeysFromToc(List<TableOfContents> toc) {
+    for (var item in toc) {
+      final id = _generateIdFromText(item.text ?? '');
+      _anchorKeys[id] = GlobalKey();
+    }
+  }
+  String _generateIdFromText(String text) {
+    return text
+        .toLowerCase()
+        .replaceAll(RegExp(r'[^a-z0-9]+'), '-')
+        .replaceAll(RegExp(r'^\-+|\-+$'), '');
   }
 }
