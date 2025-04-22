@@ -8,6 +8,7 @@ import '../../../../domain/entities/blog_detail_entity.dart';
 import '../../../../service_locator.dart';
 import '../../../../untils/resource.dart';
 import '../bloc/bloc_detail_cubit.dart';
+import '../widgets/toc_bottom_sheet.dart';
 
 class BlogDetailScreen extends StatefulWidget {
   final int blogId;
@@ -85,6 +86,7 @@ class _BlogDetailScreenState extends State<BlogDetailScreen>
   }
 
   Widget _buildBlogDetail(BlogDetailEntity blog) {
+    _initAnchorKeys(blog.tableOfContents ?? []);
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final textTheme = theme.textTheme;
@@ -385,8 +387,6 @@ class _BlogDetailScreenState extends State<BlogDetailScreen>
                           ),
                         ),
                         const SizedBox(height: 50),
-
-
                       ],
                     ),
                   ),
@@ -407,12 +407,7 @@ class _BlogDetailScreenState extends State<BlogDetailScreen>
                 mini: true,
                 backgroundColor: colorScheme.primary,
                 onPressed: () {
-                  // _scrollController.animateTo(
-                  //   0,
-                  //   duration: const Duration(milliseconds: 500),
-                  //   curve: Curves.easeInOut,
-                  // );
-                  _showTocBottomSheet(context, blog.tableOfContents ?? []);
+                  _showTocBottomSheet(context, blog.tableOfContents ?? [], "1");
                 },
                 child: Icon(
                   Icons.arrow_upward,
@@ -478,24 +473,21 @@ class _BlogDetailScreenState extends State<BlogDetailScreen>
     }
   }
 
-  void _showTocBottomSheet(BuildContext context, List<TableOfContents> tocList) {
+  void _showTocBottomSheet(
+      BuildContext context,
+      List<TableOfContents> tocList,
+      String? currentAnchorId,
+      ) {
     showModalBottomSheet(
       context: context,
-      builder: (_) => ListView.builder(
-        itemCount: tocList.length,
-        itemBuilder: (_, index) {
-          final toc = tocList[index];
-          final id = _generateAnchorIdFromText(toc.text ?? '');
-
-          return ListTile(
-            title: Text(toc.text ?? ''),
-            contentPadding: EdgeInsets.only(left: 16 + (toc.level! - 1) * 12),
-            onTap: () {
-              Navigator.pop(context);
-              _scrollToAnchor(id);
-            },
-          );
-        },
+      isScrollControlled: false,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (_) => TocBottomSheet(
+        tocList: tocList,
+        currentAnchorId: currentAnchorId,
+        onAnchorTap: (id) {_scrollToAnchor(id);},
       ),
     );
   }
